@@ -1,0 +1,21 @@
+{
+  "name": "Викторина 1",
+
+  "cards": [
+    {
+      "question": "Что?",
+      "options": ["yes", "no"],
+      "answer": "yes"
+    },
+    {
+      "question": "Гле?",
+      "options": ["yes", "no"],
+      "answer": "yes"
+    },
+    {
+      "question": "Когда?",
+      "options": ["yes", "no"],
+      "answer": "yes"
+    }
+  ]
+}

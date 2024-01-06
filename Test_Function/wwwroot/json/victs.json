@@ -1,0 +1,38 @@
+[
+  {
+    "id":"aaaa-aaaa-aaaa",
+
+    "cards":[
+      {"id":1,
+      "question":"",
+      "imagePath":"",
+      "answers":["","","",""],
+      "correct":0}],
+
+    "creator":{
+      "id":"000000000000"
+    },
+
+    "users":{},
+    "sortedUsers":[]
+  },
+  
+  {
+    "id":"aaaaaaaa",
+
+    "cards":[
+      {"id":1,
+      "question":"",
+      "imagePath":"",
+      "answers":["","","",""],
+      "correct":0}],
+
+    "creator":{
+      "id":"000000000000"
+    },
+
+    "users":{},
+    "sortedUsers":[]
+  }
+]
+
