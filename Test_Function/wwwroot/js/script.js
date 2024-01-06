@@ -4,7 +4,7 @@ console.log(window.location)
 // Страница со всеми викторинами
 if (window.location.pathname === '/allVicts.html') {
     function getVicts() {
-        fetch("/testing/")
+        fetch("/api/quizes/")
             .then((res) => res.json())
             .then((result) => {
                 render(result);
@@ -48,9 +48,10 @@ if (window.location.pathname === '/allVicts.html') {
 
 // Страница создателя викторины
 async function quizCreator() {
-    let currentQuiz = {};
+    let name = "";
+    let link = "";
     const id = window.location.search.split('=')[1];
-    await fetch("/testing/")
+    await fetch(`/api/quizes/link/${id}`)
         .then((response) => {
             // if (!response.ok) {
             //   throw new Error()
@@ -58,25 +59,26 @@ async function quizCreator() {
             return response.json();
         })
         .then((data) => {
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].id === id) {
-                    currentQuiz = data[i];
-                    break;
-                }
-            }
+            name = data.name;
+            link = data.link;
         });
-    console.log(currentQuiz);
+    console.log(name);
 
     const quiz = document.querySelector('.quiz-windows');
 
     const quizTitle = document.createElement('h1');
-    quizTitle.innerHTML = `${currentQuiz.name}`;
+    quizTitle.innerHTML = `${name}`;
+
+    const quizLink = document.createElement('p');
+    quizLink.innerHTML = `${link}`;
 
     const users = document.createElement('div');
     //users.classList.add('users-list');
     const usersTitle = document.createElement('h2');
     usersTitle.innerHTML = `Участники`;
     users.append(usersTitle);
+
+    quiz.append(quizLink);
 
     const btn = document.createElement('button');
     btn.innerHTML = `

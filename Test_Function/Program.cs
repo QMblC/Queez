@@ -29,6 +29,7 @@ if (!app.Environment.IsDevelopment())
 
 var activeQuizHandler = new ActiveQuiz();
 var quizCreationHandler = new QuizCreation();
+var allVictsHandler = new AllVictsHandler();
 
 app.Run(async (context) =>
 {
@@ -46,19 +47,27 @@ app.Run(async (context) =>
     {
         await context.Response.SendFileAsync("Queez/vict.html");
     }
-    else if (Regex.IsMatch(path, @"testing"))
+    else if (Regex.IsMatch(path, @"api/quizes/$"))
     {
         await quizCreationHandler.HandleRequest(context.Response, context.Request, context.Connection);
     }
+    else if (Regex.IsMatch(path, @"api/quizes/link/"))
+    {
+        await activeQuizHandler.StartQuiz(context.Response, context.Request);
+    }
     else if (Regex.IsMatch(path, @"/allVicts"))
     {
-        await context.Response.SendFileAsync("Queez/allVicts.html");
+        await allVictsHandler.HandleRequest(context.Response, context.Request, context.Connection);
     }
     else if (Regex.IsMatch(path, @"/vict-going.html"))
     {
         await context.Response.SendFileAsync("Queez/vict-going.html");
     }
-    else if (Regex.IsMatch(path, @"players.html"))
+    else if (Regex.IsMatch(path, @"players.html$"))
+    {
+        await context.Response.SendFileAsync("Queez/players.html");
+    }
+    else if (Regex.IsMatch(path, @"players.html?id=\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}$"))
     {
         await context.Response.SendFileAsync("Queez/players.html");
     }

@@ -4,7 +4,7 @@ using Test_Function.QuizStructure;
 
 namespace Test_Function.API
 {
-    public class QuizCreation
+    public class AllVictsHandler
     {
         public static Dictionary<string, Quiz> Quizes { get; set; } = new()
         {
@@ -86,33 +86,24 @@ namespace Test_Function.API
             } },
         };
 
-        public async Task HandleRequest(HttpResponse response,  HttpRequest request, ConnectionInfo connection)
+        public async Task HandleRequest(HttpResponse response, HttpRequest request, ConnectionInfo connection)
         {
-            var ipExpression = @"/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/[0-9]{12}";
             var guidExpression = @"/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$";
 
-            var path = request.Path.Value;        
+            var path = request.Path.Value;
 
-            if (request.Method == "GET" && Regex.IsMatch(path, guidExpression))
-            {
-                //Выдача из Дб по id
-            }
             if (request.Method == "GET" && Regex.IsMatch(path, @"api/quizes"))
             {
                 await GetQuezes(response);
             }
-            else if (request.Method == "POST")
-            {
-                //Создание id и викторины
-            }
             else
             {
-                await response.SendFileAsync("Queez/create.html");
+                await response.SendFileAsync("Queez/allVicts.html");
             }
         }
 
         public async Task CreateQuiz(HttpResponse response, HttpRequest request)
-        { 
+        {
             var id = Guid.NewGuid().ToString();
             var quiz = new Quiz(id);
         }
@@ -128,7 +119,7 @@ namespace Test_Function.API
                 b[i]["name"] = a[i].Name;
             };
 
-            await response.WriteAsJsonAsync(b) ;
+            await response.WriteAsJsonAsync(b);
         }
     }
 }

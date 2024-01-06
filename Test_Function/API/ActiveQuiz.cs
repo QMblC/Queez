@@ -11,7 +11,6 @@ namespace Test_Function.API
 
         public async Task HandleRequest(HttpResponse response, HttpRequest request, ConnectionInfo connection)
         {
-            var quizIdExpression = @"/quiz-creator.html?id=\w{8}-\w{4}-\w{4}-\w{4}-\w{12}";//Выражение для 
             var ipExpression = @"\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/[0-9]{12}";
             var guidExpression = @"\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$";
 
@@ -44,9 +43,13 @@ namespace Test_Function.API
 
                 if (quiz != null)
                 {
-                    if (!Quizes.ContainsKey(id))
-                        Quizes[id] = quiz;
-                        await response.WriteAsJsonAsync(Quizes[id]);
+                    var currentId = quiz.Id + Guid.NewGuid().ToString();
+                    Quizes[currentId] = quiz;
+                    var json = new Dictionary<string, string>();
+                    json["name"] = quiz.Name;
+                    json["link"] = "https://localhost:7290/players.html?id=" + currentId;
+
+                    await response.WriteAsJsonAsync(json);
                 }
                 else
                 {
