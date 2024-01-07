@@ -16,7 +16,6 @@ namespace Test_Function.QuizStructure
         public Quiz(string id)
         {
             Id = id;
-            Cards.Add(new Card(1));
             Creator = new Creator("0");
         }
 
@@ -46,7 +45,7 @@ namespace Test_Function.QuizStructure
                         user.Value.Points[i] = 0;
         }
 
-        public void SetCheckAnswer(string userIp, int questionId, int answer)//Пока оптимально
+        public void SetCheckAnswer(string userIp, int questionId, string answer)//Пока оптимально
         {
             Users[userIp].Answers[questionId] = answer;
             Users[userIp].Points[questionId] = answer == Cards[questionId].Correct ? 1 : 0;
@@ -59,9 +58,9 @@ namespace Test_Function.QuizStructure
         public void AddUser(string id)
         {
             var user = new User(id);
-            user.Answers = new int[Cards.Count];
+            user.Answers = new string[Cards.Count];
             for(var i = 0; i < user.Answers.Length; i++)
-                user.Answers[i] = -1;
+                user.Answers[i] = "!@#$%^&*";
             user.Points = new int[Cards.Count];
             if (!Users.ContainsKey(user.Id))
                 Users[user.Id] = user;

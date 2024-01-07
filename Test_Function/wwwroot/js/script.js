@@ -42,6 +42,8 @@ if (window.location.pathname === '/allVicts.html') {
 
     }
     getVicts();
+
+
 }
 ////////////////////////////////////////////////////////////////
 

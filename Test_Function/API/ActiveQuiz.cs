@@ -29,25 +29,27 @@ namespace Test_Function.API
             {
                 var a = new Timer(new TimerCallback(Console.WriteLine), null, 0, 10000);
                 response.ContentType = "text/html; charset=utf-8";
-                await response.SendFileAsync("Queez/quiz-creator.html");        
+                await response.SendFileAsync("Queez/quiz-creator.cshtml");        
             }
         }
 
-        public async Task StartQuiz(HttpResponse response, HttpRequest request)//?
+        public async Task StartQuiz(HttpResponse response, HttpRequest request)
         {
             var id = request.Path.Value?.Split("/")[^1];
-            
+
             if (id != null)
             {
-                var quiz = QuizCreation.Quizes[id];
+                var quiz = AllVictsHandler.Quizes[id];
 
                 if (quiz != null)
                 {
                     var currentId = quiz.Id + Guid.NewGuid().ToString();
                     Quizes[currentId] = quiz;
-                    var json = new Dictionary<string, string>();
-                    json["name"] = quiz.Name;
-                    json["link"] = "https://localhost:7290/players.html?id=" + currentId;
+                    var json = new Dictionary<string, string>
+                    {
+                        ["name"] = quiz.Name,
+                        ["link"] = "https://localhost:7290/players.html?id=" + currentId
+                    };
 
                     await response.WriteAsJsonAsync(json);
                 }
@@ -55,14 +57,14 @@ namespace Test_Function.API
                 {
                     response.StatusCode = 404;
                     await response.WriteAsJsonAsync("Пользователь не найден");
-                }        
+                }
             }
             else
             {
                 response.StatusCode = 404;
                 await response.WriteAsJsonAsync("Некорректный ID");
-            }             
-        }
+            }
+        }          
 
         public async Task ConnectQuiz(HttpResponse response, HttpRequest request, ConnectionInfo connection)
         {//Удалить?
@@ -96,7 +98,7 @@ namespace Test_Function.API
         {
             var quizId = request.Path.Value?.Split("/")[^1];
             var userId = request.Path.Value?.Split("/")[^1];
-            var answer = await request.ReadFromJsonAsync<(int answerId, int answerValue)>();
+            var answer = await request.ReadFromJsonAsync<(int answerId, string answerValue)>();
 
 
             if (quizId != null && userId != null)

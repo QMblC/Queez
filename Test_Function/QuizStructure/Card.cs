@@ -9,8 +9,8 @@ namespace Test_Function.QuizStructure
         public int Id { get; private set; } //Мб убрать private set
         public string Question { get; set; } = "";
         public string ImagePath { get; private set; } = ""; //Переработать?
-        public List<string> Answers { get; set; } = new();
-        public int Correct { get; set; }
+        public List<string> Options { get; set; } = new();
+        public string Correct { get; set; } = "";
 
         #endregion
 
@@ -18,20 +18,22 @@ namespace Test_Function.QuizStructure
         {
             Id = id;
             for (var i = 0; i < 4; i++)
-                Answers.Add("");
+                Options.Add("");
         }
 
         public void UpdateQuestion(string newQuestion) => Question = newQuestion;
 
         public void UpdateImagePath(string newImagePath) => ImagePath = newImagePath;
 
-        public void UpdateAnswer(int id, string newAnswer) => Answers[id] = newAnswer;
+        public void UpdateCorrect(string newCorrect) => Correct = newCorrect;
 
-        public void UpdateAnswer(string[] newAnswers)
+        public void UpdateOptions(int id, string newAnswer) => Options[id] = newAnswer;
+
+        public void UpdateOptions(string[] newOptions)
         {
-            if (newAnswers.Length == Answers.Count)
-                for (var i = 0; i < newAnswers.Length; i++)
-                    Answers[i] = newAnswers[i];
+            if (newOptions.Length == Options.Count)
+                for (var i = 0; i < newOptions.Length; i++)
+                    Options[i] = newOptions[i];
         }
     }
 }

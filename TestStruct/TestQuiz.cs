@@ -21,12 +21,12 @@ namespace TestStruct
             Quiz = new Quiz("1");
 
             var card1 = new Card(1);
-            card1.UpdateAnswer(new[] { "Yes", "No", "No", "No" });
-            card1.Correct = 0;
+            card1.UpdateOptions(new[] { "Yes", "No", "No", "No" });
+            card1.Correct = "Yes";
 
             var card2 = new Card(2);
-            card2.UpdateAnswer(new[] { "No", "Yes", "No", "No" });
-            card2.Correct = 1;
+            card2.UpdateOptions(new[] { "No", "Yes", "No", "No" });
+            card2.Correct = "Yes";
 
             Quiz.AddCard(card1);
             Quiz.AddCard(card2);
@@ -34,15 +34,15 @@ namespace TestStruct
             Quiz.AddUser("123:0:12:31");
             var user1 = Quiz.Users["123000012031"];
 
-            Quiz.SetCheckAnswer(user1.Id, 0, 2);
-            Quiz.SetCheckAnswer(user1.Id, 1, 3);
+            Quiz.SetCheckAnswer(user1.Id, 0, "No");
+            Quiz.SetCheckAnswer(user1.Id, 1, "No");
 
             Quiz.AddUser("123:0:12:32");
 
             var user2 = Quiz.Users["123000012032"];
 
-            Quiz.SetCheckAnswer(user2.Id, 0, 0);
-            Quiz.SetCheckAnswer(user2.Id, 1, 1);
+            Quiz.SetCheckAnswer(user2.Id, 0, "Yes");
+            Quiz.SetCheckAnswer(user2.Id, 1, "Yes");
         }
 
         [TestCase()]

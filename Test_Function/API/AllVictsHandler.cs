@@ -16,29 +16,29 @@ namespace Test_Function.API
                     new Card(1)
                     {
                         Question = "2+2= ?",
-                        Answers = new()
+                        Options = new()
                         {
                             "1", "2", "3", "4"
                         },
-                        Correct = 3
+                        Correct = "4"
                     },
                     new Card(2)
                     {
                         Question = "2+1= ?",
-                        Answers = new()
+                        Options = new()
                         {
                             "1", "2", "3", "4"
                         },
-                        Correct = 2
+                        Correct = "3"
                     },
                     new Card(3)
                     {
                         Question = "1+1= ?",
-                        Answers = new()
+                        Options = new()
                         {
                             "1", "2", "3", "4"
                         },
-                        Correct = 1
+                        Correct = "2"
                     }
                 }
             } },
@@ -50,29 +50,29 @@ namespace Test_Function.API
                     new Card(1)
                     {
                         Question = "Кто хищник?",
-                        Answers = new()
+                        Options = new()
                         {
                             "Заяц", "Мышь", "Белка", "Лиса"
                         },
-                        Correct = 3
+                        Correct = "Лиса"
                     },
                     new Card(2)
                     {
                         Question = "У кого самая длинная шея",
-                        Answers = new()
+                        Options = new()
                         {
                             "Слон", "Лев", "Жираф", "Носорог"
                         },
-                        Correct = 2
+                        Correct = "Жираф"
                     },
                     new Card(3)
                     {
                         Question = "Кто не умеет прыгать",
-                        Answers = new()
+                        Options = new()
                         {
                             "Тигр", "Слон", "Собака", "Кот"
                         },
-                        Correct = 1
+                        Correct = "Слон"
                     }
                 }
             } },

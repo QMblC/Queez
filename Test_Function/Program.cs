@@ -39,17 +39,17 @@ app.Run(async (context) =>
     {
         await activeQuizHandler.HandleRequest(context.Response, context.Request, context.Connection);
     }
-    else if (Regex.IsMatch(path, @"/create.html"))
+    else if (Regex.IsMatch(path, @"/create.html$"))
     {
         await quizCreationHandler.HandleRequest(context.Response, context.Request, context.Connection);
     }
-    else if (Regex.IsMatch(path, @"/vict.html"))
+    else if (Regex.IsMatch(path, @"/vict.html$"))
     {
         await context.Response.SendFileAsync("Queez/vict.html");
     }
     else if (Regex.IsMatch(path, @"api/quizes/$"))
     {
-        await quizCreationHandler.HandleRequest(context.Response, context.Request, context.Connection);
+        await allVictsHandler.HandleRequest(context.Response, context.Request, context.Connection);
     }
     else if (Regex.IsMatch(path, @"api/quizes/link/"))
     {
@@ -59,9 +59,9 @@ app.Run(async (context) =>
     {
         await allVictsHandler.HandleRequest(context.Response, context.Request, context.Connection);
     }
-    else if (Regex.IsMatch(path, @"/vict-going.html"))
+    else if (Regex.IsMatch(path, @"/vict-going.html$"))
     {
-        await context.Response.SendFileAsync("Queez/vict-going.html");
+        await context.Response.SendFileAsync("Queez/vict-going.html$");
     }
     else if (Regex.IsMatch(path, @"players.html$"))
     {
