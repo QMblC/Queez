@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using Test_Function.API;
 using Test_Function.Models;
+
 
 
 
@@ -35,10 +39,11 @@ var allVictsHandler = new AllVictsHandler();
 app.Run(async (context) =>
 {
     var path = context.Request.Path;
+    var queryString = context.Request.QueryString.ToString();
 
     if (Regex.IsMatch(path, @"/quiz-creator"))
     {
-        await activeQuizHandler.HandleRequest(context.Response, context.Request, context.Connection);
+        await activeQuizHandler.HandleRequest(context.Response, context.Request, context.Connection);  
     }
     else if (Regex.IsMatch(path, @"/create.html$"))
     {
@@ -48,19 +53,27 @@ app.Run(async (context) =>
     {
         await context.Response.SendFileAsync("Queez/vict.html");
     }
-    else if (Regex.IsMatch(path, @"api/quizes/$"))
+    else if (Regex.IsMatch(path, @"/api/quiz/\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
     {
-        await allVictsHandler.HandleRequest(context.Response, context.Request, context.Connection);
+        activeQuizHandler.StartQuiz(context.Response, context.Request);
+    }
+    else if (Regex.IsMatch(path, @"/api/quiz/started/\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
+    {
+        await activeQuizHandler.IsQuizStarted(context.Response, context.Request);
     }
     else if (Regex.IsMatch(path, @"api/quizes/link/"))
     {
-        await activeQuizHandler.StartQuiz(context.Response, context.Request);
+        await activeQuizHandler.CreateLobby(context.Response, context.Request);
     }
+    else if (Regex.IsMatch(path, @"api/quizes"))
+    {
+        await allVictsHandler.HandleRequest(context.Response, context.Request, context.Connection);
+    }   
     else if (Regex.IsMatch(path, @"api/myquizes/"))
     {
         await quizCreationHandler.CreateQuiz(context.Response, context.Request);
     }
-    else if (Regex.IsMatch(path, @"api/quizes/users/"))
+    else if (Regex.IsMatch(path, @"api/quiz/users"))
     {
         await activeQuizHandler.GetQuizUsers(context.Response, context.Request);
     }
@@ -68,17 +81,17 @@ app.Run(async (context) =>
     {
         await allVictsHandler.HandleRequest(context.Response, context.Request, context.Connection);
     }
+    else if (Regex.IsMatch(path, @"api/quiz/user/") && Regex.IsMatch(queryString, @"\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
+    {
+        await activeQuizHandler.ConnectQuiz(context.Response, context.Request);
+    }
     else if (Regex.IsMatch(path, @"/vict-going.html$"))
     {
         await context.Response.SendFileAsync("Queez/vict-going.html$");
     }
     else if (Regex.IsMatch(path, @"players.html$"))
     {
-        await context.Response.SendFileAsync("Queez/players.html");
-    }
-    else if (Regex.IsMatch(path, @"players.html?id=\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}$"))
-    {
-        await context.Response.SendFileAsync("Queez/players.html");
+        await context.Response.SendFileAsync(activeQuizHandler.Quizes[context.Request.QueryString.ToString().Split("=")[^1]].active);
     }
     else
     {

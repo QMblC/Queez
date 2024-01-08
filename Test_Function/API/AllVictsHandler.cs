@@ -90,25 +90,37 @@ namespace Test_Function.API
         {
             var guidExpression = @"/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$";
 
-            var path = request.Path.Value;
+            string? path = request.Path.Value?.ToString();
 
-            if (request.Method == "GET" && Regex.IsMatch(path, @"api/quizes"))
+            if (request.Method == "GET" && Regex.IsMatch(path, @"api/quizes$"))
             {
-                await GetQuezes(response);
+                await GetQuizes(response);
+            }
+            else if (request.Method == "GET" && Regex.IsMatch(path, @"api/quizes/"))
+            {
+                await GetQuizes(response, request);
             }
             else
             {
                 await response.SendFileAsync("Queez/allVicts.html");
             }
         }
-
-        public async Task CreateQuiz(HttpResponse response, HttpRequest request)
+        public async Task GetQuizes(HttpResponse response, HttpRequest request)
         {
-            var id = Guid.NewGuid().ToString();
-            var quiz = new Quiz(id);
+            var name = request.Path.Value.Split("/")[^1].ToString();
+            var quizes = Quizes.Select(x => x.Value).Where(x => x.Name.ToLower().Contains(name.ToLower())).ToList();
+            var matchedQuizes = new List<Dictionary<string, string>>();
+            for (var i = 0; i < quizes.Count; i++)
+            {
+                matchedQuizes.Add(new Dictionary<string, string>());
+                matchedQuizes[i]["id"] = quizes[i].Id;
+                matchedQuizes[i]["name"] = quizes[i].Name;
+            };
+
+            await response.WriteAsJsonAsync(matchedQuizes);
         }
 
-        public async Task GetQuezes(HttpResponse response)
+        public async Task GetQuizes(HttpResponse response)
         {
             var a = Quizes.Select(x => x.Value).ToList();
             var b = new List<Dictionary<string, string>>();

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Net;
 using System.Text.RegularExpressions;
 using Test_Function.QuizStructure;
 
@@ -22,26 +23,56 @@ namespace Test_Function.API
             else if (request.Method == "DELETE" && Regex.IsMatch(path, guidExpression))
                 throw new NotImplementedException();
             else if (request.Method == "GET" && Regex.IsMatch(path, ipExpression))
-                await ConnectQuiz(response, request, connection);
+                await ConnectQuiz(response, request);
             else if (request.Method == "GET" && Regex.IsMatch(path, guidExpression))
-                await StartQuiz(response, request);  
+                await CreateLobby(response, request);  
             else
             {
+                
                 response.ContentType = "text/html; charset=utf-8";
                 await response.SendFileAsync("Queez/quiz-creator.html");        
             }
         }
 
-        public async Task StartQuiz(HttpResponse response, HttpRequest request)
+        public void StartQuiz(HttpResponse response, HttpRequest request)
+        {
+            var id = request.Path.Value?.Split("/")[^1];
+            if (Quizes.ContainsKey(id))
+            {
+                Quizes[id].IsStarted = true;
+            }
+            else
+            {
+                response.StatusCode = 404;
+            }
+        }
+
+        public async Task IsQuizStarted(HttpResponse response, HttpRequest request)
+        {
+            var id = request.Path.Value?.Split("/")[^1];
+            if (Quizes.ContainsKey(id))
+            {
+                if (Quizes[id].IsStarted)
+                    Quizes[id].active = Quiz.a;
+                await response.WriteAsJsonAsync(Quizes[id].IsStarted);
+            }
+            else
+            {
+                response.StatusCode = 404;
+            }
+        }
+
+        public async Task CreateLobby(HttpResponse response, HttpRequest request)
         {
             var id = request.Path.Value?.Split("/")[^1];
 
             if (id != null)
             {
-                var quiz = AllVictsHandler.Quizes[id];
-
-                if (quiz != null)
+                if (AllVictsHandler.Quizes.ContainsKey(id))
                 {
+                    var quiz = new Quiz(id);
+                    AllVictsHandler.Quizes[id].CopyTo(quiz);
+
                     var currentId = quiz.Id + Guid.NewGuid().ToString();
                     Quizes[currentId] = quiz;
                     var json = new Dictionary<string, string>
@@ -76,7 +107,8 @@ namespace Test_Function.API
                     foreach (var user in Quizes[currentId].Users.Values)
                         userNames.Add(new Dictionary<string, string>()
                         {
-                            ["name"] = user.Name
+                            ["nickname"] = user.Name,
+                            ["id"] = user.Id
                         });
                     //await response.WriteAsJsonAsync(Quizes[currentId].Users);
                     await response.WriteAsJsonAsync("true");
@@ -88,28 +120,15 @@ namespace Test_Function.API
                 response.StatusCode = 404;
         }
 
-        public async Task ConnectQuiz(HttpResponse response, HttpRequest request, ConnectionInfo connection)
+        public async Task ConnectQuiz(HttpResponse response, HttpRequest request)
         {//Удалить?
-            var quizId = request.Path.Value?.Split("/")[^2];
-            var userId = request.Path.Value?.Split("/")[^1];
+            var quizId = request.QueryString.ToString().Split("=")[^1];
+            var userId = Guid.NewGuid().ToString();
 
-            if (quizId != null && userId != null)
-            {
-                if (Quizes.ContainsKey(quizId))
-                {
-                    Quizes[quizId].AddUser(connection.RemoteIpAddress.ToString());
-                    await response.WriteAsJsonAsync(Quizes[quizId].Cards);
-                }
-                else
-                {
-                    response.StatusCode = 404;
-                    
-                }
-            }
-            else
-            {
-                response.StatusCode = 404;          
-            }
+            Quizes[quizId].AddUser(userId);
+            var userName = await request.ReadFromJsonAsync<Dictionary<string, string>>();
+            Quizes[quizId].Users[userId].Name = userName["nickname"];
+            await response.WriteAsJsonAsync(userId);
         }
 
         public async Task UpdateUserAnswer(HttpResponse response, HttpRequest request)

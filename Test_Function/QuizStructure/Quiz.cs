@@ -13,6 +13,12 @@ namespace Test_Function.QuizStructure
         public List<User> SortedUsers => Users.Select(user => user.Value)
             .OrderByDescending(user => user.Score)
             .ToList();
+        public bool IsStarted { get; set; } = false;
+
+        public static string a = "Queez/vict-going.html";
+        public static string b = "Queez/players.html";
+
+        public string active { get; set; } = b;
 
         public Quiz(string id)
         {
@@ -68,5 +74,24 @@ namespace Test_Function.QuizStructure
         }
         public void RemoveUser(User user) => Users.Remove(user.Id);
         public void ClearUsers() => Users.Clear();
+
+        public void CopyTo(Quiz quiz)
+        {
+            quiz.Name = Name;
+            for(var i = 0; i < Cards.Count; i++)
+            {
+                quiz.AddCard(new Card(Cards[i].Id)
+                {
+                    Correct = Cards[i].Correct,
+                    Options = new()
+                    {
+                        Cards[i].Options[0],
+                        Cards[i].Options[1],
+                        Cards[i].Options[2],
+                        Cards[i].Options[3],
+                    }
+                });
+            }
+        }
     }
 }
