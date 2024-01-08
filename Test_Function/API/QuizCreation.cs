@@ -48,30 +48,37 @@ namespace Test_Function.API
             
             var quiz = new Quiz(id);
             var readQuiz = await request.ReadFromJsonAsync<Data>();
-            quiz.Name = readQuiz.QuizTitle;
-            for (var i = 0; i < readQuiz.Cards.Count; i++)
+            if (readQuiz != null)
             {
-                quiz.AddCard(new Card(readQuiz.Cards[i].Id)
+                quiz.Name = readQuiz.QuizTitle;
+                for (var i = 0; i < readQuiz.Cards.Count; i++)
                 {
-                    Options = new()
+                    quiz.AddCard(new Card(readQuiz.Cards[i].Id)
                     {
-                        readQuiz.Cards[i].Options[0],
-                        readQuiz.Cards[i].Options[1],
-                        readQuiz.Cards[i].Options[2],
-                        readQuiz.Cards[i].Options[3],
-                    },
-                    Correct = readQuiz.Cards[i].Answer,
-                    Question = readQuiz.Cards[i].Question
+                        Options = new()
+                        {
+                            readQuiz.Cards[i].Options[0],
+                            readQuiz.Cards[i].Options[1],
+                            readQuiz.Cards[i].Options[2],
+                            readQuiz.Cards[i].Options[3],
+                        },
+                        Correct = readQuiz.Cards[i].Answer,
+                        Question = readQuiz.Cards[i].Question
 
-                }) ;
+                    });
+                }
+                Quizes[id] = quiz;
+                AllVictsHandler.Quizes[id] = quiz;
+                await response.WriteAsJsonAsync(new Dictionary<string, string>()
+                {
+                    ["name"] = quiz.Name,
+                    ["id"] = id
+                });
             }
-            Quizes[id] = quiz;
-            AllVictsHandler.Quizes[id] = quiz;
-            await response.WriteAsJsonAsync(new Dictionary<string, string>()
+            else
             {
-                ["name"] = quiz.Name,
-                ["id"] = id
-            });
+                response.StatusCode = 404;
+            }
             
         }
 

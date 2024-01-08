@@ -6,7 +6,7 @@ let userAuthorized = false;
 async function findPlayer() {
   const id = uinf.id;
   if (id){
-    await fetch("")//Тут всех надо поставить
+    await fetch(`/api/activequiz/getusers/${window.location.search}`)//Тут всех надо поставить
     .then((response) => response.json())
     .then(async (data) => {
       const player = data.filter((user) => user.id === id);
@@ -54,7 +54,7 @@ submit.onclick = async () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nickname},),
     };
-    await fetch(`/api/quiz/user/${window.location.search}`, user)
+    await fetch(`/api/activequiz/connectuser/${window.location.search}`, user)
     .then((response) => response.json())
         .then(async (data) => {
 
@@ -68,7 +68,7 @@ submit.onclick = async () => {
 };
 
 async function getUsersList() {
-  await fetch("../json/players.json")
+    await fetch(`/api/activequiz/getusers/${window.location.search}`)
     .then((response) => response.json())
     .then(async (data) => {
       drawUsers(data);

@@ -15,7 +15,7 @@ namespace Test_Function.API
                 {
                     new Card(1)
                     {
-                        Question = "2+2= ?",
+                        Question = "2+2=?",
                         Options = new()
                         {
                             "1", "2", "3", "4"

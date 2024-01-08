@@ -15,10 +15,14 @@ namespace Test_Function.QuizStructure
             .ToList();
         public bool IsStarted { get; set; } = false;
 
-        public static string a = "Queez/vict-going.html";
-        public static string b = "Queez/players.html";
+        public static readonly string firstPage = "Queez/players.html";
+        public static readonly string secondPage = "Queez/playerInVict.html";
+        
 
-        public string active { get; set; } = b;
+        public string active { get; set; } = firstPage;
+
+        public int ActiveCardIndex { get; set; } = 0;
+        public Card ActiveCard => Cards[ActiveCardIndex];
 
         public Quiz(string id)
         {
@@ -89,7 +93,8 @@ namespace Test_Function.QuizStructure
                         Cards[i].Options[1],
                         Cards[i].Options[2],
                         Cards[i].Options[3],
-                    }
+                    },
+                    Question = Cards[i].Question
                 });
             }
         }

@@ -1,5 +1,8 @@
 async function showQuestion() {
-  const cardInfo = await fetch("../json/playerInVict.json").then((res) =>
+    const cardInfo =
+        await fetch(`/api/activequiz/card/${window.location.search}`)
+            .then((res) =>
+
     res.json()
   );
   const { id, card } = cardInfo;
@@ -22,16 +25,19 @@ async function showQuestion() {
       console.log("click");
       const cardId = btn.closest("div").dataset.id;
       const victId = document.querySelector(".vict-card").dataset.id;
+      const userId = JSON.parse(localStorage.getItem("uinf")).id;
       const option = {
-        method: "POST",
-        body: JSON.stringify({
-          cardId,
-          victId,
-          answer: btn.textContent,
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              userId,
+              cardId,
+              victId,
+              answer: btn.textContent,
         }),
       };
       console.log(option);
-      await fetch("https://jsonplaceholder.typicode.com/users", option)
+        await fetch(`/api/activequiz/card${window.location.search}`, option)
         .then((response) => response.json())
         .then((data) => console.log(1));
     });

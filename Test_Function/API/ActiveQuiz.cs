@@ -40,6 +40,7 @@ namespace Test_Function.API
             if (Quizes.ContainsKey(id))
             {
                 Quizes[id].IsStarted = true;
+                Quizes[id].active = Quiz.secondPage;
             }
             else
             {
@@ -53,7 +54,7 @@ namespace Test_Function.API
             if (Quizes.ContainsKey(id))
             {
                 if (Quizes[id].IsStarted)
-                    Quizes[id].active = Quiz.a;
+                    Quizes[id].active = Quiz.secondPage;
                 await response.WriteAsJsonAsync(Quizes[id].IsStarted);
             }
             else
@@ -96,9 +97,27 @@ namespace Test_Function.API
             }
         }
 
+        public async Task GetCard(HttpResponse response, HttpRequest request)
+        {
+            var quizId = request.QueryString.ToString().Split("=")[^1];
+            var currentQuiz = Quizes[quizId];
+            var data = new Dictionary<string, object>()
+            {
+                ["id"] = quizId,
+                ["card"] = new Dictionary<string, object>()
+                {
+                    ["id"] = currentQuiz.ActiveCardIndex,
+                    ["question"] = currentQuiz.ActiveCard.Question,
+                    ["options"] = currentQuiz.ActiveCard.Options
+                }
+            };
+            await response.WriteAsJsonAsync(data);
+            
+        }
+
         public async Task GetQuizUsers(HttpResponse response, HttpRequest request)
         {
-            var currentId = request.Path.Value?.Split("/")[^1];
+            var currentId = request.QueryString.ToString().Split("=")[^1];
             if (currentId != null)
             {
                 if (Quizes.ContainsKey(currentId))
@@ -110,8 +129,8 @@ namespace Test_Function.API
                             ["nickname"] = user.Name,
                             ["id"] = user.Id
                         });
-                    //await response.WriteAsJsonAsync(Quizes[currentId].Users);
-                    await response.WriteAsJsonAsync("true");
+                    await response.WriteAsJsonAsync(userNames);
+                    
                 }
                 else
                     response.StatusCode = 404;
@@ -121,7 +140,7 @@ namespace Test_Function.API
         }
 
         public async Task ConnectQuiz(HttpResponse response, HttpRequest request)
-        {//Удалить?
+        {
             var quizId = request.QueryString.ToString().Split("=")[^1];
             var userId = Guid.NewGuid().ToString();
 
@@ -131,25 +150,30 @@ namespace Test_Function.API
             await response.WriteAsJsonAsync(userId);
         }
 
-        public async Task UpdateUserAnswer(HttpResponse response, HttpRequest request)
+        public async Task SetUserAnswer(HttpResponse response, HttpRequest request)
         {
-            var quizId = request.Path.Value?.Split("/")[^1];
-            var userId = request.Path.Value?.Split("/")[^1];
-            var answer = await request.ReadFromJsonAsync<(int answerId, string answerValue)>();
+            var quizId = request.QueryString.ToString().Split("=")[^1];
+            var result = await request.ReadFromJsonAsync<Dictionary<string,string>>();
+
+            if (result != null)
+            {
+                var userId = result["userId"];
+                var cardId = int.Parse(result["cardId"]);
+                var answer = result["answer"];
+                Quizes[quizId].SetCheckAnswer(userId, cardId, answer);
+
+            }
 
 
-            if (quizId != null && userId != null)
-            {
-                Quizes[quizId].SetCheckAnswer(userId, answer.answerId, answer.answerValue);
-            }
-            else if (quizId == null )
-            {
-                response.StatusCode = 404;
-            }
-            else
-            {
-                response.StatusCode = 404;
-            }
+
+            //if (quizId != null)
+            //{
+            //    Quizes[quizId].SetCheckAnswer(userId, result.answerId, result.answerValue);
+            //}
+            //else
+            //{
+            //    response.StatusCode = 404;
+            //}
         }
 
         public async Task EndQuiz(HttpResponse response, HttpRequest request)
