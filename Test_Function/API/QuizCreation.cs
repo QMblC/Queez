@@ -20,7 +20,7 @@ namespace Test_Function.API
             {
                 //Выдача из Дб по id
             }
-            if (request.Method == "GET")
+            if (request.Method == "GET" && Regex.IsMatch(path, @"api/my"))
             {
                 await GetQuezes(response);
             }
@@ -47,7 +47,31 @@ namespace Test_Function.API
             }
             
             var quiz = new Quiz(id);
-            var readQuiz = request.ReadFromJsonAsync<(string, string)>();
+            var readQuiz = await request.ReadFromJsonAsync<Data>();
+            quiz.Name = readQuiz.QuizTitle;
+            for (var i = 0; i < readQuiz.Cards.Count; i++)
+            {
+                quiz.AddCard(new Card(readQuiz.Cards[i].Id)
+                {
+                    Options = new()
+                    {
+                        readQuiz.Cards[i].Options[0],
+                        readQuiz.Cards[i].Options[1],
+                        readQuiz.Cards[i].Options[2],
+                        readQuiz.Cards[i].Options[3],
+                    },
+                    Correct = readQuiz.Cards[i].Answer,
+                    Question = readQuiz.Cards[i].Question
+
+                }) ;
+            }
+            Quizes[id] = quiz;
+            AllVictsHandler.Quizes[id] = quiz;
+            await response.WriteAsJsonAsync(new Dictionary<string, string>()
+            {
+                ["name"] = quiz.Name,
+                ["id"] = id
+            });
             
         }
 
@@ -65,4 +89,20 @@ namespace Test_Function.API
             await response.WriteAsJsonAsync(b) ;
         }
     }
+
+    public class Data
+    {
+        public string QuizTitle { get; set; }
+        public List<DataCard> Cards { get; set; }
+    }
+
+    public class DataCard
+    {
+        public string QuestionType { get; set; }
+        public int Id { get; set; }
+        public string Question { get; set; }
+        public List<string> Options { get; set; }
+        public string Answer { get; set; }
+    }
 }
+

@@ -27,9 +27,8 @@ namespace Test_Function.API
                 await StartQuiz(response, request);  
             else
             {
-                var a = new Timer(new TimerCallback(Console.WriteLine), null, 0, 10000);
                 response.ContentType = "text/html; charset=utf-8";
-                await response.SendFileAsync("Queez/quiz-creator.cshtml");        
+                await response.SendFileAsync("Queez/quiz-creator.html");        
             }
         }
 
@@ -64,7 +63,30 @@ namespace Test_Function.API
                 response.StatusCode = 404;
                 await response.WriteAsJsonAsync("Некорректный ID");
             }
-        }          
+        }
+
+        public async Task GetQuizUsers(HttpResponse response, HttpRequest request)
+        {
+            var currentId = request.Path.Value?.Split("/")[^1];
+            if (currentId != null)
+            {
+                if (Quizes.ContainsKey(currentId))
+                {
+                    var userNames = new List<Dictionary<string, string>>();
+                    foreach (var user in Quizes[currentId].Users.Values)
+                        userNames.Add(new Dictionary<string, string>()
+                        {
+                            ["name"] = user.Name
+                        });
+                    //await response.WriteAsJsonAsync(Quizes[currentId].Users);
+                    await response.WriteAsJsonAsync("true");
+                }
+                else
+                    response.StatusCode = 404;
+            }
+            else
+                response.StatusCode = 404;
+        }
 
         public async Task ConnectQuiz(HttpResponse response, HttpRequest request, ConnectionInfo connection)
         {//Удалить?
@@ -83,10 +105,6 @@ namespace Test_Function.API
                     response.StatusCode = 404;
                     
                 }
-            }
-            else if (quizId == null)
-            {
-                response.StatusCode = 404;
             }
             else
             {

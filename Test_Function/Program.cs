@@ -31,6 +31,7 @@ var activeQuizHandler = new ActiveQuiz();
 var quizCreationHandler = new QuizCreation();
 var allVictsHandler = new AllVictsHandler();
 
+
 app.Run(async (context) =>
 {
     var path = context.Request.Path;
@@ -54,6 +55,14 @@ app.Run(async (context) =>
     else if (Regex.IsMatch(path, @"api/quizes/link/"))
     {
         await activeQuizHandler.StartQuiz(context.Response, context.Request);
+    }
+    else if (Regex.IsMatch(path, @"api/myquizes/"))
+    {
+        await quizCreationHandler.CreateQuiz(context.Response, context.Request);
+    }
+    else if (Regex.IsMatch(path, @"api/quizes/users/"))
+    {
+        await activeQuizHandler.GetQuizUsers(context.Response, context.Request);
     }
     else if (Regex.IsMatch(path, @"/allVicts"))
     {
