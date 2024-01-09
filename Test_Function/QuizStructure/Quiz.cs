@@ -79,6 +79,22 @@ namespace Test_Function.QuizStructure
         public void RemoveUser(User user) => Users.Remove(user.Id);
         public void ClearUsers() => Users.Clear();
 
+        public void NextCard()
+        {
+            if (ActiveCardIndex <= Cards.Count)
+                ActiveCardIndex++;
+            else
+                throw new Exception("Карточек больше нет!");
+        }
+
+        public void PreviousCard()
+        {
+            if (ActiveCardIndex >= 0)
+                ActiveCardIndex++;
+            else
+                throw new Exception("Это первая карточка!");
+        }
+
         public void CopyTo(Quiz quiz)
         {
             quiz.Name = Name;

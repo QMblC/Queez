@@ -43,7 +43,7 @@ app.Run(async (context) =>
 
     if (Regex.IsMatch(path, @"/quiz-creator"))
     {
-        await activeQuizHandler.HandleRequest(context.Response, context.Request, context.Connection);  
+        await activeQuizHandler.HandleRequest(context.Response, context.Request);  
     }
     else if (Regex.IsMatch(path, @"/create.html$"))
     {
@@ -53,16 +53,13 @@ app.Run(async (context) =>
     {
         await context.Response.SendFileAsync("Queez/vict.html");
     }
-
-
-
-    else if (Regex.IsMatch(path, @"/api/quiz/started/\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
+    else if (Regex.IsMatch(path, @"/api/activequiz/started/\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
     {
         await activeQuizHandler.IsQuizStarted(context.Response, context.Request);
     }
-    else if (Regex.IsMatch(path, @"api/quizes/link/"))
+    else if (Regex.IsMatch(path, @"^/api/activequiz/"))
     {
-        await activeQuizHandler.CreateLobby(context.Response, context.Request);
+        await activeQuizHandler.HandleRequest(context.Response, context.Request);
     }
     else if (Regex.IsMatch(path, @"api/quizes"))
     {
@@ -76,22 +73,6 @@ app.Run(async (context) =>
     {
         await allVictsHandler.HandleRequest(context.Response, context.Request, context.Connection);
     }
-    else if (Regex.IsMatch(path, @"api/activequiz/connectuser/") && Regex.IsMatch(queryString, @"\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
-    {
-        await activeQuizHandler.ConnectQuiz(context.Response, context.Request);
-    }
-    else if (Regex.IsMatch(path, @"api/activequiz/getusers/") && Regex.IsMatch(queryString, @"\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
-    {
-        await activeQuizHandler.GetQuizUsers(context.Response, context.Request);
-    }
-    else if (context.Request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/card") && Regex.IsMatch(queryString, @"\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
-    {
-        await activeQuizHandler.GetCard(context.Response, context.Request);
-    }
-    else if (context.Request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/card") && Regex.IsMatch(queryString, @"\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
-    {
-        await activeQuizHandler.SetUserAnswer(context.Response, context.Request);
-    }
     else if (Regex.IsMatch(path, @"/vict-going.html$"))
     {
         await context.Response.SendFileAsync("Queez/vict-going.html$");
@@ -100,12 +81,6 @@ app.Run(async (context) =>
     {
         await context.Response.SendFileAsync(activeQuizHandler.Quizes[context.Request.QueryString.ToString().Split("=")[^1]].active);
     }
-
-    else if (Regex.IsMatch(path, @"/api/quiz/\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
-    {
-        activeQuizHandler.StartQuiz(context.Response, context.Request);
-    }
-
     else
     {
         //context.Response.ContentType = "text/html; charset=utf-8";

@@ -37,7 +37,7 @@ async function showQuestion() {
         }),
       };
       console.log(option);
-        await fetch(`/api/activequiz/card${window.location.search}`, option)
+        await fetch(`/api/activequiz/card/${window.location.search}`, option)
         .then((response) => response.json())
         .then((data) => console.log(1));
     });

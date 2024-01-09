@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Microsoft.AspNetCore.Http;
+using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using Test_Function.QuizStructure;
@@ -10,28 +11,26 @@ namespace Test_Function.API
     {
         public Dictionary<string, Quiz> Quizes = new();
 
-        public async Task HandleRequest(HttpResponse response, HttpRequest request, ConnectionInfo connection)
+        public async Task HandleRequest(HttpResponse response, HttpRequest request)
         {
-            var ipExpression = @"\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/[0-9]{12}";
-            var guidExpression = @"\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$";
+            var idExpression = @"\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}";
 
             var path = request.Path.Value;
-            if (request.Method == "POST")
-                throw new NotImplementedException();
-            else if (request.Method == "PUT")
-                throw new NotImplementedException();
-            else if (request.Method == "DELETE" && Regex.IsMatch(path, guidExpression))
-                throw new NotImplementedException();
-            else if (request.Method == "GET" && Regex.IsMatch(path, ipExpression))
+            var queryString = request.QueryString.ToString();
+            if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
+                await SetUserAnswer(response, request);
+            else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
+                await GetCard(response, request);
+            else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
+                await GetQuizUsers(response, request);
+            else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/user/") && Regex.IsMatch(queryString, @"\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
                 await ConnectQuiz(response, request);
-            else if (request.Method == "GET" && Regex.IsMatch(path, guidExpression))
-                await CreateLobby(response, request);  
-            else
-            {
-                
-                response.ContentType = "text/html; charset=utf-8";
-                await response.SendFileAsync("Queez/quiz-creator.html");        
-            }
+            else if (Regex.IsMatch(path, @"api/activequiz/link/"))
+                await CreateLobby(response, request);
+            else if (Regex.IsMatch(path, @"/api/activequiz/" + idExpression))
+                StartQuiz(response, request);
+            else  
+                await response.SendFileAsync("Queez/quiz-creator.html");
         }
 
         public void StartQuiz(HttpResponse response, HttpRequest request)
@@ -161,19 +160,9 @@ namespace Test_Function.API
                 var cardId = int.Parse(result["cardId"]);
                 var answer = result["answer"];
                 Quizes[quizId].SetCheckAnswer(userId, cardId, answer);
-
             }
-
-
-
-            //if (quizId != null)
-            //{
-            //    Quizes[quizId].SetCheckAnswer(userId, result.answerId, result.answerValue);
-            //}
-            //else
-            //{
-            //    response.StatusCode = 404;
-            //}
+            else
+                response.StatusCode = 404;
         }
 
         public async Task EndQuiz(HttpResponse response, HttpRequest request)

@@ -53,7 +53,7 @@ async function quizCreator() {
     let name = "";
     let link = "";
     const id = window.location.search.split('=')[1];
-    await fetch(`/api/quizes/link/${id}`)
+    await fetch(`/api/activequiz/link/${id}`)
         .then((response) => {
             // if (!response.ok) {
             //   throw new Error()
