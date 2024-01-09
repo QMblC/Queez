@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Test_Function.App_Data
+namespace QueezServer.App_Data
 {
     public class ContactAPIDB : DbContext
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Test_Function.Models
+namespace QueezServer.Models
 {
     public class ApplicationContext : DbContext
     {

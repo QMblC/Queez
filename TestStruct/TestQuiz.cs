@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Test_Function.QuizStructure;
+using QueezServer.QuizStructure;
 using Assert = NUnit.Framework.Assert;
 
 namespace TestStruct

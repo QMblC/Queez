@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.RegularExpressions;
-using Test_Function.QuizStructure;
+using QueezServer.QuizStructure;
 
-namespace Test_Function.API
+namespace QueezServer.API
 {
     public class AllVictsHandler
     {

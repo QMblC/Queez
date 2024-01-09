@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Test_Function\Test_Function.csproj" />
+    <ProjectReference Include="..\Test_Function\QueezServer.csproj" />
   </ItemGroup>
 
 </Project>

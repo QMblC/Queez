@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_Function", "Test_Function\Test_Function.csproj", "{DA46F48D-9253-458D-B496-8E366D6DF2F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueezServer", "Test_Function\QueezServer.csproj", "{DA46F48D-9253-458D-B496-8E366D6DF2F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestStruct", "TestStruct\TestStruct.csproj", "{A1A02FAE-0FD8-43E6-9791-8A252E5ED184}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestStruct", "TestStruct\TestStruct.csproj", "{A1A02FAE-0FD8-43E6-9791-8A252E5ED184}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DA46F48D-9253-458D-B496-8E366D6DF2F1} = {DA46F48D-9253-458D-B496-8E366D6DF2F1}
 	EndProjectSection

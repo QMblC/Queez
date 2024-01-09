@@ -1,4 +1,4 @@
-﻿namespace Test_Function.QuizStructure
+﻿namespace QueezServer.QuizStructure
 {
     public class Creator : IPerson
     {
@@ -6,7 +6,7 @@
 
         public Creator(string id)
         {
-            Id = Test_Function.QuizStructure.Ip.Tranform(id);
+            Id = QueezServer.QuizStructure.Ip.Tranform(id);
         }
     }
 }

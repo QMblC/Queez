@@ -1,6 +1,6 @@
 ﻿using System.Drawing.Imaging;
 
-namespace Test_Function.QuizStructure
+namespace QueezServer.QuizStructure
 {
     public class Card
     {

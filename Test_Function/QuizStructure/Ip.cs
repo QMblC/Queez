@@ -1,4 +1,4 @@
-﻿namespace Test_Function.QuizStructure
+﻿namespace QueezServer.QuizStructure
 {
     public static class Ip
     {

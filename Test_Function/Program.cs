@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore.Query;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using Test_Function.API;
-using Test_Function.Models;
+using QueezServer.API;
+using QueezServer.Models;
 
 
 

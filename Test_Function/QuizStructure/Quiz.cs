@@ -1,7 +1,7 @@
 ﻿using System.Web;
 
 
-namespace Test_Function.QuizStructure
+namespace QueezServer.QuizStructure
 {
     public class Quiz
     {

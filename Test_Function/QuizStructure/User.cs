@@ -1,4 +1,4 @@
-﻿namespace Test_Function.QuizStructure
+﻿namespace QueezServer.QuizStructure
 {
     public class User : IPerson
     {
@@ -10,7 +10,7 @@
 
         public User(string ip)
         {
-            Id = Test_Function.QuizStructure.Ip.Tranform(ip);
+            Id = QueezServer.QuizStructure.Ip.Tranform(ip);
         }
 
         public void ChangeAnswer(int id, string answer) => Answers[id] = answer;
