@@ -43,7 +43,7 @@ app.Run(async (context) =>
 
     if (Regex.IsMatch(path, @"/quiz-creator"))
     {
-        await activeQuizHandler.HandleRequest(context.Response, context.Request);  
+        await context.Response.SendFileAsync("Queez/quiz-creator.html");
     }
     else if (Regex.IsMatch(path, @"/create.html$"))
     {

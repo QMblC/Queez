@@ -29,7 +29,9 @@ namespace Test_Function.API
                 await CreateLobby(response, request);
             else if (Regex.IsMatch(path, @"/api/activequiz/" + idExpression))
                 StartQuiz(response, request);
-            else  
+            else if (Regex.IsMatch(path, @"api/activequiz/card/nextcard"))
+                Quizes[path.Split("/")[^1]].NextCard();
+            else
                 await response.SendFileAsync("Queez/quiz-creator.html");
         }
 
