@@ -79,7 +79,7 @@ app.Run(async (context) =>
     }
     else if (Regex.IsMatch(path, @"players.html$"))
     {
-        await context.Response.SendFileAsync(activeQuizHandler.Quizes[context.Request.QueryString.ToString().Split("=")[^1]].active);
+        await context.Response.SendFileAsync(activeQuizHandler.Quizes[context.Request.QueryString.ToString().Split("=")[^1]].QuizState.FilePath);
     }
     else
     {

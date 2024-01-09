@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using QueezServer.QuizStructure;
+using QueezServer.QuizStructure.QuizState;
 
 namespace QueezServer.API
 {
@@ -27,7 +28,7 @@ namespace QueezServer.API
                 await ConnectQuiz(response, request);
             else if (Regex.IsMatch(path, @"api/activequiz/link/"))
                 await CreateLobby(response, request);
-            else if (Regex.IsMatch(path, @"/api/activequiz/" + idExpression))
+            else if (Regex.IsMatch(path, @"/api/activequiz/startquiz/" + idExpression))
                 StartQuiz(response, request);
             else if (Regex.IsMatch(path, @"api/activequiz/card/nextcard"))
                 Quizes[path.Split("/")[^1]].NextCard();
@@ -41,7 +42,7 @@ namespace QueezServer.API
             if (Quizes.ContainsKey(id))
             {
                 Quizes[id].IsStarted = true;
-                Quizes[id].active = Quiz.secondPage;
+                Quizes[id].QuizState = new ActiveQuizState();
             }
             else
             {

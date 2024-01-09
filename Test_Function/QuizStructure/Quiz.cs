@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using QueezServer.QuizStructure.QuizState;
+using System.Web;
 
 
 namespace QueezServer.QuizStructure
@@ -14,6 +15,8 @@ namespace QueezServer.QuizStructure
             .OrderByDescending(user => user.Score)
             .ToList();
         public bool IsStarted { get; set; } = false;
+
+        public IQuizState QuizState { get; set; } = new LobbyQuizState();
 
         public static readonly string firstPage = "Queez/players.html";
         public static readonly string secondPage = "Queez/playerInVict.html";

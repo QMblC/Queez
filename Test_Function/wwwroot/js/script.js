@@ -87,7 +87,16 @@ async function quizCreator() {
     <span>Начать</span>
   `;
     btn.addEventListener('click', () => {
-        //window.location.href = "vict-going.html"
+        const start = {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+        };
+        
+    let splited = link.split('=')
+    let currentId = splited[splited.length - 1]
+    console.log(currentId)
+    fetch(`/api/activequiz/startquiz/${currentId}`, start);
 
     });
 
