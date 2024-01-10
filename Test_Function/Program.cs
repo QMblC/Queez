@@ -44,6 +44,11 @@ app.Run(async (context) =>
     {
         await context.Response.SendFileAsync("Queez/quiz-creator.html");
     }
+    else if (Regex.IsMatch(path, @"/testing"))
+    {
+        var dt = DateTime.UtcNow;
+        await context.Response.WriteAsJsonAsync(dt);
+    }
     else if (Regex.IsMatch(path, @"/create.html$"))
     {
         await quizCreationHandler.HandleRequest(context.Response, context.Request, context.Connection);

@@ -22,7 +22,6 @@ namespace QueezServer.QuizStructure
         public IQuizState QuizState { get; set; } = new LobbyQuizState();
         public int ActiveCardIndex { get; set; } = 0;
         public Card ActiveCard => Cards[ActiveCardIndex];
-
         public DateTime? StartTime { get; set; } = null;
         #endregion
         public Quiz(string id)
@@ -59,8 +58,12 @@ namespace QueezServer.QuizStructure
 
         public void SetCheckAnswer(string userIp, int questionId, string answer)//Пока оптимально
         {
-            Users[userIp].Answers[questionId] = answer;
-            Users[userIp].Points[questionId] = answer == Cards[questionId].Correct ? 1 : 0;
+            if (Users[userIp].Answers[questionId] == "!@#$%^&*")
+            {
+                Users[userIp].Answers[questionId] = answer;
+                Users[userIp].Points[questionId] = answer == Cards[questionId].Correct ? 1 : 0;
+            }
+            
         }
 
         public void AddCard(Card card) => Cards.Add(card);
@@ -85,7 +88,7 @@ namespace QueezServer.QuizStructure
             if (ActiveCardIndex <= Cards.Count)
                 ActiveCardIndex++;
             else
-                throw new Exception("Карточек больше нет!");
+                QuizState = new ResultTableState();
         }
 
         public void PreviousCard()

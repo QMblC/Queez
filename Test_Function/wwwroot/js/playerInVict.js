@@ -1,11 +1,17 @@
 async function showQuestion() {
+    var date = new Date();
+    const dateBody = {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(date.toISOString()),
+    };
     const cardInfo =
-        await fetch(`/api/activequiz/card/${window.location.search}`)
+        await fetch(`/api/activequiz/card/${window.location.search}`, dateBody)
             .then((res) =>
-
     res.json()
-  );
-  const { id, card } = cardInfo;
+        );
+  //Тут я добавил отправку/времени(вроде utc)
+    const { id, card, dateTime } = cardInfo;
   const cardForm = document.createElement("div");
   cardForm.className = "vict-card";
   cardForm.dataset.id = id;
@@ -47,3 +53,14 @@ async function showQuestion() {
 
 const interface = document.querySelector(".player-interface");
 showQuestion();
+
+async function request() {
+    await fetch(`/api/activequiz/card/nextcard/${window.location.search}`)
+        .then((response) => location.reload()) ;
+}
+
+
+setTimeout(function tick() {
+        request();
+    }, 5000);
+

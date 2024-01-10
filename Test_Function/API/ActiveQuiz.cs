@@ -21,7 +21,7 @@ namespace QueezServer.API
 
             if (request.Method == "PUT" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
                 await SetUserAnswer(response, request);
-            else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
+            else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
                 await GetCard(response, request);
             else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
                 await GetQuizUsers(response, request);
@@ -31,7 +31,7 @@ namespace QueezServer.API
                 await CreateLobby(response, request);
             else if (Regex.IsMatch(path, @"/api/activequiz/startquiz/" + idExpression))
                 await StartQuiz(response, request);
-            else if (Regex.IsMatch(path, @"api/activequiz/card/nextcard"))
+            else if (Regex.IsMatch(path, @"/api/activequiz/card/nextcard/"))
                 await NextCard(response, request);
             else
                 await response.SendFileAsync("Queez/quiz-creator.html");
@@ -88,7 +88,7 @@ namespace QueezServer.API
 
         public async Task NextCard(HttpResponse response, HttpRequest request)
         {
-            var quizId = request.Path.Value?.ToString().Split("/")[^1];
+            var quizId = request.QueryString.ToString().Split("=")[^1];
             if (quizId != null)
             {
                 Quizes[quizId].NextCard();
@@ -98,7 +98,7 @@ namespace QueezServer.API
             else
             {
                 response.StatusCode = 404;
-                await response.WriteAsJsonAsync("Не найдена активная викторина");
+                //await response.WriteAsJsonAsync("Не найдена активная викторина");
             }
         }
 
@@ -148,6 +148,9 @@ namespace QueezServer.API
         {//Еще время получать/отдавать
             var quizId = request.QueryString.ToString().Split("=")[^1];
             var currentQuiz = Quizes[quizId];
+            var date = await request.ReadFromJsonAsync<DateTime>();
+            if (currentQuiz.StartTime == null)
+                currentQuiz.StartTime = date;
             var data = new Dictionary<string, object>()
             {
                 ["id"] = quizId,
@@ -156,9 +159,10 @@ namespace QueezServer.API
                     ["id"] = currentQuiz.ActiveCardIndex,
                     ["question"] = currentQuiz.ActiveCard.Question,
                     ["options"] = currentQuiz.ActiveCard.Options
-                }
+                },
+                ["dateTime"] = currentQuiz.StartTime
             };
-            await response.WriteAsJsonAsync(data);       
+            await response.WriteAsJsonAsync(data);
         }
 
         public async Task GetQuizUsers(HttpResponse response, HttpRequest request)

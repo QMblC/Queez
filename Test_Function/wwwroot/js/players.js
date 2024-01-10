@@ -102,6 +102,7 @@ async function checkUsers() {
   let timerId = setTimeout(function tick() {
     console.log("Checking");
     getUsersList();
-    timerId = setTimeout(tick, delay);
+      timerId = setTimeout(tick, delay);
   }, 0);
 }
+
