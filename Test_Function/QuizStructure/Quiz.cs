@@ -18,12 +18,6 @@ namespace QueezServer.QuizStructure
 
         public IQuizState QuizState { get; set; } = new LobbyQuizState();
 
-        public static readonly string firstPage = "Queez/players.html";
-        public static readonly string secondPage = "Queez/playerInVict.html";
-        
-
-        public string active { get; set; } = firstPage;
-
         public int ActiveCardIndex { get; set; } = 0;
         public Card ActiveCard => Cards[ActiveCardIndex];
 

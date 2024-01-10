@@ -24,7 +24,7 @@ namespace QueezServer.API
                 await GetCard(response, request);
             else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
                 await GetQuizUsers(response, request);
-            else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/user/") && Regex.IsMatch(queryString, @"\w{8}-\w{4}-\w{4}-\w{4}-\w{20}-\w{4}-\w{4}-\w{4}-\w{12}"))
+            else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
                 await ConnectQuiz(response, request);
             else if (Regex.IsMatch(path, @"api/activequiz/link/"))
                 await CreateLobby(response, request);
@@ -46,7 +46,7 @@ namespace QueezServer.API
             }
             else
             {
-                response.StatusCode = 404;
+                response.StatusCode = 404;         
             }
         }
 

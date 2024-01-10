@@ -8,9 +8,9 @@
         public string[] Answers { get; set; } = new string[0];
         public int Score => Points.Sum();
 
-        public User(string ip)
+        public User(string id)
         {
-            Id = QueezServer.QuizStructure.Ip.Tranform(ip);
+            Id = id;
         }
 
         public void ChangeAnswer(int id, string answer) => Answers[id] = answer;

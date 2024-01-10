@@ -7,10 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using QueezServer.API;
 using QueezServer.Models;
-
-
-
-
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder();
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -40,6 +37,8 @@ app.Run(async (context) =>
 {
     var path = context.Request.Path;
     var queryString = context.Request.QueryString.ToString();
+
+    var time = JsonSerializer.Serialize(DateTime.Now);
 
     if (Regex.IsMatch(path, @"/quiz-creator"))
     {
