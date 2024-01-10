@@ -6,21 +6,25 @@ namespace QueezServer.QuizStructure
 {
     public class Quiz
     {
+        #region SaveDB
         public string Id { get; set; }
         public string Name { get; set; } = "";
         public List<Card> Cards { get; set; } = new();
-        public Creator Creator { get; set; } = new Creator("0:0:0:0");
+        public Creator Creator { get; set; }
+        #endregion
+
+        #region TechnicalFields
         public Dictionary<string,User> Users { get; } = new();
         public List<User> SortedUsers => Users.Select(user => user.Value)
             .OrderByDescending(user => user.Score)
             .ToList();
         public bool IsStarted { get; set; } = false;
-
         public IQuizState QuizState { get; set; } = new LobbyQuizState();
-
         public int ActiveCardIndex { get; set; } = 0;
         public Card ActiveCard => Cards[ActiveCardIndex];
 
+        public DateTime? StartTime { get; set; } = null;
+        #endregion
         public Quiz(string id)
         {
             Id = id;

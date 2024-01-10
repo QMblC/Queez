@@ -65,9 +65,9 @@ async function quizCreator() {
             link = data.link;
         });
     //Тут я тестил
-    var date = new Date();
-    console.log(JSON.stringify(date.toISOString()));
-    //
+    //var date = new Date();
+    //console.log(JSON.stringify(date.toISOString()));
+
     const quiz = document.querySelector('.quiz-windows');
 
     const quizTitle = document.createElement('h1');

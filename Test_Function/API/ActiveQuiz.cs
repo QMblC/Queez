@@ -18,7 +18,8 @@ namespace QueezServer.API
 
             var path = request.Path.Value;
             var queryString = request.QueryString.ToString();
-            if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
+
+            if (request.Method == "PUT" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
                 await SetUserAnswer(response, request);
             else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
                 await GetCard(response, request);
@@ -29,40 +30,11 @@ namespace QueezServer.API
             else if (Regex.IsMatch(path, @"api/activequiz/link/"))
                 await CreateLobby(response, request);
             else if (Regex.IsMatch(path, @"/api/activequiz/startquiz/" + idExpression))
-                StartQuiz(response, request);
+                await StartQuiz(response, request);
             else if (Regex.IsMatch(path, @"api/activequiz/card/nextcard"))
-                Quizes[path.Split("/")[^1]].NextCard();
+                await NextCard(response, request);
             else
                 await response.SendFileAsync("Queez/quiz-creator.html");
-        }
-
-        public void StartQuiz(HttpResponse response, HttpRequest request)
-        {
-            var id = request.Path.Value?.Split("/")[^1];
-            if (Quizes.ContainsKey(id))
-            {
-                Quizes[id].IsStarted = true;
-                Quizes[id].QuizState = new ActiveQuizState();
-            }
-            else
-            {
-                response.StatusCode = 404;         
-            }
-        }
-
-        public async Task IsQuizStarted(HttpResponse response, HttpRequest request)
-        {
-            var id = request.Path.Value?.Split("/")[^1];
-            if (Quizes.ContainsKey(id))
-            {
-                if (Quizes[id].IsStarted)
-                    Quizes[id].active = Quiz.secondPage;
-                await response.WriteAsJsonAsync(Quizes[id].IsStarted);
-            }
-            else
-            {
-                response.StatusCode = 404;
-            }
         }
 
         public async Task CreateLobby(HttpResponse response, HttpRequest request)
@@ -99,8 +71,81 @@ namespace QueezServer.API
             }
         }
 
-        public async Task GetCard(HttpResponse response, HttpRequest request)
+        public async Task StartQuiz(HttpResponse response, HttpRequest request)
         {
+            var id = request.Path.Value?.Split("/")[^1];
+            if (Quizes.ContainsKey(id))
+            {
+                Quizes[id].IsStarted = true;
+                Quizes[id].QuizState = new ActiveQuizState();
+            }
+            else
+            {
+                response.StatusCode = 404;
+                await response.WriteAsJsonAsync("Не найдена активная викторина");
+            }
+        }
+
+        public async Task NextCard(HttpResponse response, HttpRequest request)
+        {
+            var quizId = request.Path.Value?.ToString().Split("/")[^1];
+            if (quizId != null)
+            {
+                Quizes[quizId].NextCard();
+                Quizes[quizId].QuizState = new ActiveQuizState();
+                Quizes[quizId].StartTime = null;
+            }
+            else
+            {
+                response.StatusCode = 404;
+                await response.WriteAsJsonAsync("Не найдена активная викторина");
+            }
+        }
+
+        public async Task ChangeStateResult(HttpResponse response, HttpRequest request)
+        {
+            var quizId = request.Path.Value?.ToString().Split("/")[^1];
+            if (quizId != null)
+            {
+                if (Quizes.ContainsKey(quizId))
+                {
+                    Quizes[quizId].QuizState = new ResultTableState();
+                    Quizes[quizId].StartTime = null;
+                }                 
+                else
+                {
+                    response.StatusCode = 404;
+                    await response.WriteAsJsonAsync("Не найдена активная викторина");
+                }
+            }
+            else
+            {
+                response.StatusCode = 404;
+                await response.WriteAsJsonAsync("Не найдена активная викторина");
+            }
+
+        }
+
+        public async Task GetResult(HttpResponse response, HttpRequest request)
+        {//Вернуть массив {id, имя, очки}
+
+        }
+
+        public async Task IsQuizStarted(HttpResponse response, HttpRequest request)
+        {
+            var id = request.Path.Value?.Split("/")[^1];
+            if (Quizes.ContainsKey(id))
+            {
+                await response.WriteAsJsonAsync(Quizes[id].IsStarted);
+            }
+            else
+            {
+                response.StatusCode = 404;
+            }
+        }
+
+        public async Task GetCard(HttpResponse response, HttpRequest request)
+        {//Еще время получать/отдавать
             var quizId = request.QueryString.ToString().Split("=")[^1];
             var currentQuiz = Quizes[quizId];
             var data = new Dictionary<string, object>()
@@ -113,8 +158,7 @@ namespace QueezServer.API
                     ["options"] = currentQuiz.ActiveCard.Options
                 }
             };
-            await response.WriteAsJsonAsync(data);
-            
+            await response.WriteAsJsonAsync(data);       
         }
 
         public async Task GetQuizUsers(HttpResponse response, HttpRequest request)
@@ -131,8 +175,7 @@ namespace QueezServer.API
                             ["nickname"] = user.Name,
                             ["id"] = user.Id
                         });
-                    await response.WriteAsJsonAsync(userNames);
-                    
+                    await response.WriteAsJsonAsync(userNames); 
                 }
                 else
                     response.StatusCode = 404;

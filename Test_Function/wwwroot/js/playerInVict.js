@@ -27,7 +27,7 @@ async function showQuestion() {
       const victId = document.querySelector(".vict-card").dataset.id;
       const userId = JSON.parse(localStorage.getItem("uinf")).id;
       const option = {
-          method: "POST",
+          method: "PUT",
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
               userId,
