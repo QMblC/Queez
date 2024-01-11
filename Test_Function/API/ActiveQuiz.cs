@@ -22,6 +22,9 @@ namespace QueezServer.API
             if (path == null)
                 throw new Exception("Path is null");
 
+            if (Regex.IsMatch(path, @"players.html$"))
+                await ShowHtml(response, request);
+
             if (request.Method == "PUT" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
                 await SetUserAnswer(response, request);
             else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
@@ -40,6 +43,19 @@ namespace QueezServer.API
                 await NextCard(response, request);
             else
                 await response.SendFileAsync("Queez/quiz-creator.html");
+        }
+
+        public async Task ShowHtml(HttpResponse response, HttpRequest request)
+        {
+            var quizId = request.QueryString.ToString().Split("=")[^1];
+
+            if (Quizes.ContainsKey(quizId))
+                await response.SendFileAsync(Quizes[quizId].QuizState.FilePath);
+            else
+            {
+                response.StatusCode = 404;
+            }
+                
         }
 
         public async Task CreateLobby(HttpResponse response, HttpRequest request)
@@ -198,11 +214,28 @@ namespace QueezServer.API
         {
             var quizId = request.QueryString.ToString().Split("=")[^1];
             var userId = Guid.NewGuid().ToString();
+            if (quizId != null)
+            {
+                if (Quizes.ContainsKey(quizId))
+                {
+                    while (Quizes.ContainsKey(userId))
+                        userId = Guid.NewGuid().ToString();
 
-            Quizes[quizId].AddUser(userId);
-            var userName = await request.ReadFromJsonAsync<Dictionary<string, string>>();
-            Quizes[quizId].Users[userId].Name = userName["nickname"];
-            await response.WriteAsJsonAsync(userId);
+                    Quizes[quizId].AddUser(userId);
+                    var userName = await request.ReadFromJsonAsync<Dictionary<string, string>>();
+                    Quizes[quizId].Users[userId].Name = userName["nickname"];
+                    await response.WriteAsJsonAsync(userId);
+                }
+                else
+                {
+                    response.StatusCode = 404;
+                }
+                    
+            }
+            else
+            {
+                response.StatusCode = 400;
+            }   
         }
 
         public async Task SetUserAnswer(HttpResponse response, HttpRequest request)
@@ -231,3 +264,4 @@ namespace QueezServer.API
         }
     }
 }
+
