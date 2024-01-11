@@ -91,8 +91,9 @@ namespace QueezServer.API
             var quizId = request.QueryString.ToString().Split("=")[^1];
             if (quizId != null)
             {
-                Quizes[quizId].NextCard();
+                
                 Quizes[quizId].QuizState = new ActiveQuizState();
+                Quizes[quizId].NextCard();
                 Quizes[quizId].StartTime = null;
             }
             else

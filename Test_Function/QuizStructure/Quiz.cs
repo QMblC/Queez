@@ -85,7 +85,7 @@ namespace QueezServer.QuizStructure
 
         public void NextCard()
         {
-            if (ActiveCardIndex <= Cards.Count)
+            if (ActiveCardIndex < Cards.Count - 1)
                 ActiveCardIndex++;
             else
                 QuizState = new ResultTableState();

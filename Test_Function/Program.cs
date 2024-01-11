@@ -38,7 +38,7 @@ app.Run(async (context) =>
     var path = context.Request.Path;
     var queryString = context.Request.QueryString.ToString();
 
-    var time = JsonSerializer.Serialize(DateTime.Now);
+
 
     if (Regex.IsMatch(path, @"/quiz-creator"))
     {
