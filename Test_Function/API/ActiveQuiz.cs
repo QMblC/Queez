@@ -19,6 +19,9 @@ namespace QueezServer.API
             var path = request.Path.Value;
             var queryString = request.QueryString.ToString();
 
+            if (path == null)
+                throw new Exception("Path is null");
+
             if (request.Method == "PUT" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
                 await SetUserAnswer(response, request);
             else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
@@ -27,6 +30,8 @@ namespace QueezServer.API
                 await GetQuizUsers(response, request);
             else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
                 await ConnectQuiz(response, request);
+            else if (Regex.IsMatch(path, @"/api/activequiz/started/"))
+                await IsQuizStarted(response, request);
             else if (Regex.IsMatch(path, @"api/activequiz/link/"))
                 await CreateLobby(response, request);
             else if (Regex.IsMatch(path, @"/api/activequiz/startquiz/" + idExpression))
@@ -134,7 +139,7 @@ namespace QueezServer.API
 
         public async Task IsQuizStarted(HttpResponse response, HttpRequest request)
         {
-            var id = request.Path.Value?.Split("/")[^1];
+            var id = request.QueryString.ToString().Split("=")[^1];
             if (Quizes.ContainsKey(id))
             {
                 await response.WriteAsJsonAsync(Quizes[id].IsStarted);

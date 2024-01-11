@@ -88,9 +88,9 @@ namespace QueezServer.API
 
         public async Task HandleRequest(HttpResponse response, HttpRequest request, ConnectionInfo connection)
         {
-            var guidExpression = @"/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$";
+            //var guidExpression = @"/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$";
 
-            string? path = request.Path.Value?.ToString();
+            var path = request.Path.Value?.ToString();
 
             if (request.Method == "GET" && Regex.IsMatch(path, @"api/quizes$"))
             {

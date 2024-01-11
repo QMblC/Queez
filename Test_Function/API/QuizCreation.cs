@@ -11,7 +11,6 @@ namespace QueezServer.API
 
         public async Task HandleRequest(HttpResponse response,  HttpRequest request, ConnectionInfo connection)
         {
-            var ipExpression = @"/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/[0-9]{12}";
             var guidExpression = @"\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$";
 
             var path = request.Path.Value;        

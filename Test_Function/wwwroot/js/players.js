@@ -98,11 +98,22 @@ async function drawUsers(usersList) {
 }
 
 async function checkUsers() {
-  const delay = 3000;
+  const delay = 1000;
   let timerId = setTimeout(function tick() {
     console.log("Checking");
     getUsersList();
+    isQuizStarted()
       timerId = setTimeout(tick, delay);
   }, 0);
 }
 
+
+async function isQuizStarted() {
+    await fetch(`/api/activequiz/started/${window.location.search}`)
+        .then((response) => response.json())
+        .then(async (data) => {
+            if (data === true)
+                location.reload();
+                ;
+        });
+}
