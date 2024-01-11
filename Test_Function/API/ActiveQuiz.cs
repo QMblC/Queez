@@ -31,6 +31,8 @@ namespace QueezServer.API
                 await GetCard(response, request);
             else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
                 await GetQuizUsers(response, request);
+            else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/score/$") && Regex.IsMatch(queryString, idExpression))
+                await GetQuizScore(response, request);
             else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
                 await ConnectQuiz(response, request);
             else if (Regex.IsMatch(path, @"/api/activequiz/started/"))
@@ -41,8 +43,6 @@ namespace QueezServer.API
                 await StartQuiz(response, request);
             else if (Regex.IsMatch(path, @"/api/activequiz/card/nextcard/"))
                 await NextCard(response, request);
-            else
-                await response.SendFileAsync("Queez/quiz-creator.html");
         }
 
         public async Task ShowHtml(HttpResponse response, HttpRequest request)
@@ -210,6 +210,30 @@ namespace QueezServer.API
                 response.StatusCode = 404;
         }
 
+        public async Task GetQuizScore(HttpResponse response, HttpRequest request)
+        {
+            var currentId = request.QueryString.ToString().Split("=")[^1];
+            if (currentId != null)
+            {
+                if (Quizes.ContainsKey(currentId))
+                {
+                    var userNames = new List<Dictionary<string, string>>();
+                    foreach (var user in Quizes[currentId].Users.Values)
+                        userNames.Add(new Dictionary<string, string>()
+                        {
+                            ["nickname"] = user.Name,
+                            ["id"] = user.Id,
+                            ["score"] = user.Score.ToString()
+                        });
+                    await response.WriteAsJsonAsync(userNames);
+                }
+                else
+                    response.StatusCode = 404;
+            }
+            else
+                response.StatusCode = 404;
+        }
+
         public async Task ConnectQuiz(HttpResponse response, HttpRequest request)
         {
             var quizId = request.QueryString.ToString().Split("=")[^1];
@@ -256,11 +280,19 @@ namespace QueezServer.API
 
         public async Task EndQuiz(HttpResponse response, HttpRequest request)
         {
+            
             var id = request.Path.Value;
+
             if (id != null)
             {
+                await Task.Delay(30000);
                 Quizes.Remove(id);
             }
+        }
+        
+        public void Remove(string id)
+        {
+            Quizes.Remove(id);
         }
     }
 }
