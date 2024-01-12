@@ -57,7 +57,6 @@ app.Run(async (context) =>
     {
         await context.Response.SendFileAsync("Queez/vict.html");
     }
-
     else if (Regex.IsMatch(path, @"^/api/activequiz/") || Regex.IsMatch(path, @"players.html$"))
     {
         await activeQuizHandler.HandleRequest(context.Response, context.Request);

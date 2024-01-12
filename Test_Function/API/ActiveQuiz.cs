@@ -29,16 +29,22 @@ namespace QueezServer.API
                 await SetUserAnswer(response, request);
             else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
                 await GetCard(response, request);
+            else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/user/answer/$") && Regex.IsMatch(queryString, idExpression))
+                await GetAnswer(response, request);
             else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
                 await GetQuizUsers(response, request);
             else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/score/$") && Regex.IsMatch(queryString, idExpression))
                 await GetQuizScore(response, request);
             else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
-                await ConnectQuiz(response, request);
+                await ConnectUser(response, request);
+            else if (request.Method == "DELETE" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
+                await DisconnectUser(response, request);
             else if (Regex.IsMatch(path, @"/api/activequiz/started/"))
                 await IsQuizStarted(response, request);
             else if (Regex.IsMatch(path, @"api/activequiz/link/"))
                 await CreateLobby(response, request);
+            else if (Regex.IsMatch(path, @"api/activequiz/delete/"))//api для удаления + надо добавить window.location.search
+                await DeleteLobby(response, request);
             else if (Regex.IsMatch(path, @"/api/activequiz/startquiz/" + idExpression))
                 await StartQuiz(response, request);
             else if (Regex.IsMatch(path, @"/api/activequiz/card/nextcard/"))
@@ -120,37 +126,29 @@ namespace QueezServer.API
             else
             {
                 response.StatusCode = 404;
-                //await response.WriteAsJsonAsync("Не найдена активная викторина");
+                await response.WriteAsJsonAsync("Не найдена активная викторина");
             }
         }
 
-        public async Task ChangeStateResult(HttpResponse response, HttpRequest request)
+        public async Task GetAnswer(HttpResponse response, HttpRequest request)
         {
-            var quizId = request.Path.Value?.ToString().Split("/")[^1];
+            var quizId = request.QueryString.ToString().Split("=")[^1];
+
             if (quizId != null)
             {
                 if (Quizes.ContainsKey(quizId))
                 {
-                    Quizes[quizId].QuizState = new ResultTableState();
-                    Quizes[quizId].StartTime = null;
-                }                 
+                    await response.WriteAsJsonAsync(Quizes[quizId].ActiveCard.Correct);
+                }
                 else
                 {
                     response.StatusCode = 404;
-                    await response.WriteAsJsonAsync("Не найдена активная викторина");
                 }
             }
             else
             {
-                response.StatusCode = 404;
-                await response.WriteAsJsonAsync("Не найдена активная викторина");
+                response.StatusCode = 400;
             }
-
-        }
-
-        public async Task GetResult(HttpResponse response, HttpRequest request)
-        {//Вернуть массив {id, имя, очки}
-
         }
 
         public async Task IsQuizStarted(HttpResponse response, HttpRequest request)
@@ -182,8 +180,10 @@ namespace QueezServer.API
                     ["question"] = currentQuiz.ActiveCard.Question,
                     ["options"] = currentQuiz.ActiveCard.Options
                 },
-                ["dateTime"] = currentQuiz.StartTime
+                ["dateTime"] = currentQuiz.StartTime,
+                ["isLast"] = currentQuiz.ActiveCardIndex == currentQuiz.Cards.Count - 1
             };
+            Console.WriteLine(data["dateTime"].ToString());
             await response.WriteAsJsonAsync(data);
         }
 
@@ -234,7 +234,7 @@ namespace QueezServer.API
                 response.StatusCode = 404;
         }
 
-        public async Task ConnectQuiz(HttpResponse response, HttpRequest request)
+        public async Task ConnectUser(HttpResponse response, HttpRequest request)
         {
             var quizId = request.QueryString.ToString().Split("=")[^1];
             var userId = Guid.NewGuid().ToString();
@@ -245,10 +245,22 @@ namespace QueezServer.API
                     while (Quizes.ContainsKey(userId))
                         userId = Guid.NewGuid().ToString();
 
-                    Quizes[quizId].AddUser(userId);
-                    var userName = await request.ReadFromJsonAsync<Dictionary<string, string>>();
-                    Quizes[quizId].Users[userId].Name = userName["nickname"];
-                    await response.WriteAsJsonAsync(userId);
+                    if (!Quizes[quizId].IsStarted)
+                    {
+                        Quizes[quizId].AddUser(userId);
+                        var userName = await request.ReadFromJsonAsync<Dictionary<string, string>>();
+                        if (userName != null)
+                        {
+                            Quizes[quizId].Users[userId].Name = userName["nickname"];
+                            await response.WriteAsJsonAsync(userId);
+                        }
+                        else
+                        {
+                            response.StatusCode = 400;
+                        }
+                    }
+                    else
+                        response.StatusCode = 403;
                 }
                 else
                 {
@@ -260,6 +272,31 @@ namespace QueezServer.API
             {
                 response.StatusCode = 400;
             }   
+        }
+
+        public async Task DisconnectUser(HttpResponse response, HttpRequest request)
+        {
+            var quizId = request.QueryString.ToString().Split("=")[^1];
+
+            var userId = await request.ReadFromJsonAsync<string>();
+            if (Quizes.ContainsKey(quizId))
+            {
+                if (userId != null)
+                {
+                    if (Quizes[quizId].Users.ContainsKey(userId))
+                    {
+                        Quizes[quizId].Users.Remove(userId);
+                    }
+                    else
+                    {
+                        response.StatusCode = 404;
+                    }
+                }
+                else
+                {
+                    response.StatusCode = 400;
+                }           
+            }       
         }
 
         public async Task SetUserAnswer(HttpResponse response, HttpRequest request)
@@ -278,21 +315,27 @@ namespace QueezServer.API
                 response.StatusCode = 404;
         }
 
-        public async Task EndQuiz(HttpResponse response, HttpRequest request)
+        public async Task DeleteLobby(HttpResponse response, HttpRequest request)
         {
-            
+            await Task.Delay(300000);
             var id = request.Path.Value;
 
             if (id != null)
             {
-                await Task.Delay(30000);
-                Quizes.Remove(id);
+                if (Quizes.ContainsKey(id))
+                {
+                    await Task.Delay(30000);
+                    Quizes.Remove(id);
+                }
+                else
+                {
+                    response.StatusCode = 404;
+                }
             }
-        }
-        
-        public void Remove(string id)
-        {
-            Quizes.Remove(id);
+            else
+            {
+                response.StatusCode = 400;
+            }
         }
     }
 }

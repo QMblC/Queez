@@ -24,6 +24,10 @@ body {
 	color: #151515;
 }
 
+main {
+	min-height: 70dvh;
+}
+
 .container {
 	max-width: 1200px;
 	margin: 0 auto;
@@ -46,6 +50,8 @@ body {
 	font-weight: bold;
 	font-size: 60px;
 	margin: 0;
+	user-select: none;
+	cursor: pointer;
 }
 
 .site-nav {
@@ -945,3 +951,87 @@ input::-webkit-input-placeholder {
 
 	cursor: pointer;
 }
+
+
+
+
+/* All Victs *//* All Victs *//* All Victs *//* All Victs *//* All Victs */
+
+
+.quizzes {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	row-gap: 30px;
+	margin-bottom: 80px;
+}
+
+.quiz {
+	width: 249px;
+	height: 332px;
+	background: linear-gradient(180deg, #7083A9 0%, #ABC8E6 74.48%);
+	border-radius: 15px;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+
+	padding: 58px 15px 15px 15px;
+}
+
+.quiz__title {
+	margin: 0;
+
+	color: #F9F9F9;
+	text-align: center;
+	font-family: Comfortaa;
+	font-size: 37px;
+	font-style: normal;
+	font-weight: bold;
+	line-height: normal;
+}
+
+.quiz__buttons .btn-start {
+	cursor: pointer;
+
+	border-radius: 10px;
+	background: #F9F9F9;
+
+	width: 100%;
+	box-sizing: border-box;
+	padding: 15px;
+	border: 0;
+	color: #000;
+
+	text-align: center;
+	font-family: Comfortaa;
+	font-size: 26px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;	
+
+	margin-bottom: 10px;
+}
+
+.quiz__buttons .btn-view {
+	cursor: pointer;
+
+	background: transparent;
+	border: 0;
+	padding: 0;
+
+	width: 100%;
+	color: #000;
+	text-align: center;
+	font-family: Comfortaa;
+	font-size: 20px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+}
+
+
+
+
+
+/* All Victs *//* All Victs *//* All Victs *//* All Victs *//* All Victs */

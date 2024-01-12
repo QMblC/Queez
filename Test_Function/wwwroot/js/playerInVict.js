@@ -1,17 +1,25 @@
+const timeForQuestion = 20000;
+let timerStartDif = 0;
+
 async function showQuestion() {
-    var date = new Date();
-    const dateBody = {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(date.toISOString()),
-    };
-    const cardInfo =
-        await fetch(`/api/activequiz/card/${window.location.search}`, dateBody)
-            .then((res) =>
-    res.json()
-        );
-  //��� � ������� ��������/�������(����� utc)
-    const { id, card, dateTime } = cardInfo;
+  let date = new Date();
+  const dateBody = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(date.toISOString()),
+  };
+  const cardInfo = await fetch(
+    `/api/activequiz/card/${window.location.search}`,
+    dateBody
+  ).then((res) => res.json());
+
+  const { id, card, dateTime } = cardInfo;
+    timerStartDif = new Date().getTime() - new Date(dateTime).getTime();
+    console.log(dateTime);
+    console.log(timerStartDif)
+  startTime();
+
+
   const cardForm = document.createElement("div");
   cardForm.className = "vict-card";
   cardForm.dataset.id = id;
@@ -25,42 +33,83 @@ async function showQuestion() {
     </div>
   `;
 
-
   cardForm.querySelectorAll("button").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      console.log("click");
+      if (answerSent) return;
+      // добавить стиль для выбранного ответа
       const cardId = btn.closest("div").dataset.id;
       const victId = document.querySelector(".vict-card").dataset.id;
       const userId = JSON.parse(localStorage.getItem("uinf")).id;
       const option = {
-          method: "PUT",
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-              userId,
-              cardId,
-              victId,
-              answer: btn.textContent,
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          cardId,
+          victId,
+          answer: btn.textContent,
         }),
       };
-      console.log(option);
-        await fetch(`/api/activequiz/card/${window.location.search}`, option)
-        .then((response) => response.json())
-        .then((data) => console.log(1));
+      await fetch(`/api/activequiz/card/${window.location.search}`, option).then(
+        (response) => (answerSent = true)
+      );
+      cardForm.querySelectorAll("button").forEach((btn) => {
+        btn.setAttribute("disabled", "");
+      });
     });
   });
   interface.append(cardForm);
 }
 
+let answerSent = false;
+
+async function chooseAnswer() {}
+
 const interface = document.querySelector(".player-interface");
 showQuestion();
 
 async function request() {
-    await fetch(`/api/activequiz/card/nextcard/${window.location.search}`)
-        .then((response) => location.reload()) ;
+  localStorage.removeItem("dt");
+  await fetch(`/api/activequiz/card/nextcard/${window.location.search}`).then(
+    (response) => location.reload()
+  );
 }
 
+function startTime() {
+    screenTimer();
+  setTimeout(function tick() {
+    request();
+  }, timeForQuestion - timerStartDif);
+}
 
-setTimeout(function tick() {
-        request();
-    }, 5000);
+async function startTimer(duration, display) {
+  let timer = duration;
+  let seconds = parseInt(timer % 60, 10);
 
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+
+  display.textContent = seconds;
+
+  if (--timer < 0) {
+    //clearInterval(interval);
+    display.textContent = "Время вышло!";
+    cardForm.querySelectorAll("button").forEach((btn) => {
+      btn.setAttribute("disabled", "");
+    });
+  }
+}
+
+// Запуск таймера после загрузки страницы
+function screenTimer () {
+  console.log(timerStartDif, "/", timeForQuestion - timerStartDif);
+
+  let time = timeForQuestion - timerStartDif;
+  let screenTimer = Math.floor(time / 1000);
+  let display = document.querySelector("#time");
+
+  setTimeout(function aaa() {
+    startTimer(screenTimer, display);
+    screenTimer -= 1;
+    setTimeout(aaa, 1000);
+  }, time % 1000);
+};
