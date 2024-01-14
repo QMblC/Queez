@@ -107,6 +107,13 @@ main {
 
   font-size: 40px;
   color: #f9f9f9;
+
+	transition: all 500ms;
+	cursor: pointer;
+}
+
+.option-btn:hover {
+	border: 3px solid #151515;
 }
 
 .option-one {

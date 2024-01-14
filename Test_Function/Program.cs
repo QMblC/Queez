@@ -9,11 +9,13 @@ using QueezServer.API;
 using QueezServer.Models;
 using System.Text.Json;
 
+
 var builder = WebApplication.CreateBuilder();
-string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+
+var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
+
+
 
 var app = builder.Build();
 

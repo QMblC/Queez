@@ -10,10 +10,10 @@ namespace QueezServer.QuizStructure
         public string Id { get; set; }
         public string Name { get; set; } = "";
         public List<Card> Cards { get; set; } = new();
-        public Creator Creator { get; set; }
         #endregion
 
         #region TechnicalFields
+        public Creator Creator { get; set; }
         public Dictionary<string,User> Users { get; } = new();
         public List<User> SortedUsers => Users.Select(user => user.Value)
             .OrderByDescending(user => user.Score)
@@ -24,6 +24,7 @@ namespace QueezServer.QuizStructure
         public Card ActiveCard => Cards[ActiveCardIndex];
         public DateTime? StartTime { get; set; } = null;
         #endregion
+
         public Quiz(string id)
         {
             Id = id;
@@ -56,14 +57,26 @@ namespace QueezServer.QuizStructure
                         user.Value.Points[i] = 0;
         }
 
-        public void SetCheckAnswer(string userIp, int questionId, string answer)//Пока оптимально
+        public void SetCheckAnswer(string userId, int questionId, string answer)//Пока оптимально
         {
-            if (Users[userIp].Answers[questionId] == "!@#$%^&*")
+            if (Users[userId].Answers[questionId] == "!@#$%^&*")
             {
-                Users[userIp].Answers[questionId] = answer;
-                Users[userIp].Points[questionId] = answer == Cards[questionId].Correct ? 1 : 0;
-            }
-            
+                Users[userId].Answers[questionId] = answer;
+                if (answer == Cards[questionId].Correct)
+                {
+                    Users[userId].Points[questionId] = CalculateScore(questionId);
+                    Cards[questionId].Anwsered++;
+                }
+                else
+                {
+                    Users[userId].Points[questionId] = 0;
+                }
+            }      
+        }
+
+        public int CalculateScore(int questionId)
+        {
+            return Users.Count - Cards[questionId].Anwsered;
         }
 
         public void AddCard(Card card) => Cards.Add(card);
@@ -87,8 +100,6 @@ namespace QueezServer.QuizStructure
         {
             if (ActiveCardIndex < Cards.Count - 1)
                 ActiveCardIndex++;
-            else
-                QuizState = new ResultTableState();
         }
 
         public void PreviousCard()

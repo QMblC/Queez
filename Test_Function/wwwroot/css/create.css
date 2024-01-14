@@ -57,6 +57,15 @@ main {
 	padding: 10px 20px;
 	border-radius: 10px;
 	background-color: #ABC8E6;
+
+	transition: all 500ms ease;
+}
+
+.btn:hover {
+	background: rgba(0,0,0,0);
+	color: #3a7999;
+	box-shadow: inset 0 0 0 3px #3a7999;
+	cursor: pointer;
 }
 
 /* ВЫБОР ТИПА ВОПРОСА *//* ВЫБОР ТИПА ВОПРОСА *//* ВЫБОР ТИПА ВОПРОСА *//* ВЫБОР ТИПА ВОПРОСА */
@@ -227,6 +236,13 @@ main {
 	
 	cursor: pointer;
 
+	color: #151515;
+
+	transition: all 500ms ease;
+}
+
+.btn-create-card:hover {
+	background: rgba(0,0,0,0);
 	color: #151515;
 }
 
@@ -475,6 +491,13 @@ input::-webkit-input-placeholder {
   width: 10%;
   float: left;
   font-size: 5px;
+
+	transition: all 500ms ease;
+}
+
+.option-cb:hover {
+	cursor: pointer;
+	background-color: #9faab7;
 }
 
 .option-cb:before {
@@ -485,8 +508,25 @@ input::-webkit-input-placeholder {
 }
 
 .option-cb.active {
-	background-color: black;
+	box-shadow: inset 0 0 0 3px #151515;
 }
+
+.option-cb.active:hover {
+	background-color: #F9F9F9;
+}
+
+.option-cb.active:after {
+	content: "";
+	display: block;
+	width: 50%;
+	height: 50%;
+	background-color: #6AB1FB;
+	border-radius: 50%;
+	position: absolute;
+	top: 25%;
+	left: 25%;
+}
+
 
 .box {
   position: relative;
@@ -558,6 +598,12 @@ input::-webkit-input-placeholder {
 	border-radius: 10px;
 	background-color: #6AB1FB;
 	padding: 10px;
+
+	transition: all 500ms ease;
+}
+
+.btn-title-save:hover {
+	background-color: #3a7999;
 }
 
 .btn-title-save-text {
@@ -572,6 +618,12 @@ input::-webkit-input-placeholder {
 	border-radius: 10px;
 	background-color: #f9f9f9;
 	padding: 10px;
+
+	transition: all 500ms ease;
+}
+
+.btn-title-back:hover {
+	background: #9faab7
 }
 
 .btn-title-back-text {
@@ -587,6 +639,14 @@ input::-webkit-input-placeholder {
 	background: none;
 	border: 2px solid #151515;
 	border-radius: 20px;
+
+	transition: all 500ms ease;
+}
+
+.tf-cb:hover {
+	cursor: pointer;
+	background: rgba(0,0,0,0);
+	box-shadow: inset 0 0 0 3px #151515;
 }
 
 .option .tf-cb.active {
@@ -659,6 +719,14 @@ input::-webkit-input-placeholder {
 	border: none;
 
 	cursor: pointer;
+
+	transition: all 500ms ease;
+}
+
+.btn__create__vict:hover {
+	background: rgba(0,0,0,0);
+	color: #3a7999;
+	box-shadow: inset 0 0 0 3px #3a7999;
 }
 
 

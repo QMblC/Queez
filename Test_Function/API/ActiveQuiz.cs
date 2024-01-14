@@ -190,7 +190,6 @@ namespace QueezServer.API
                 ["isLast"] = currentQuiz.ActiveCardIndex == currentQuiz.Cards.Count - 1,
                 ["type"] = currentQuiz.ActiveCard.Type
             };
-            Console.WriteLine(data["dateTime"].ToString());
             await response.WriteAsJsonAsync(data);
         }
 
@@ -330,7 +329,7 @@ namespace QueezServer.API
             {
                 if (Quizes.ContainsKey(id))
                 {
-                    await Task.Delay(30000);
+                    await Task.Delay(300000);
                     Quizes.Remove(id);
                 }
                 else

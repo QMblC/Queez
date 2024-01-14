@@ -30,11 +30,14 @@
 
 	color: #F9F9F9;
 	font-size: 25px;
+
+	transition: all 500ms ease;
 }
 
 .create__content:hover {
-	outline: 2px solid #A5C8EC;
-	background-color: #7083A9;
+	background: rgba(0,0,0,0);
+	color: #3a7999;
+	box-shadow: inset 0 0 0 3px #3a7999;
 }
 
 .quizzes__title {

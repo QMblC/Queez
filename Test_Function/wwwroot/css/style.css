@@ -81,7 +81,14 @@ body {
 	font-weight: 600;
 }
 
+.list-item-link:hover {
+	color: #8a7f8e;
+}
 
+.list-item-link.active-page:hover {
+	color: #6AB1FB;
+	cursor: default;
+}
 
 .active-page {
 	color: #6AB1FB;

@@ -8,10 +8,14 @@ namespace QueezServer.QuizStructure
         #region Properties
         public int Id { get; private set; } //Мб убрать private set
         public string Question { get; set; } = "";
-        public string ImagePath { get; private set; } = ""; //Переработать?
         public List<string> Options { get; set; } = new();
         public string Correct { get; set; } = "";
         public string Type { get; set; }
+
+
+
+        public int Anwsered { get; set; }
+
 
         #endregion
 
@@ -23,8 +27,6 @@ namespace QueezServer.QuizStructure
         }
 
         public void UpdateQuestion(string newQuestion) => Question = newQuestion;
-
-        public void UpdateImagePath(string newImagePath) => ImagePath = newImagePath;
 
         public void UpdateCorrect(string newCorrect) => Correct = newCorrect;
 

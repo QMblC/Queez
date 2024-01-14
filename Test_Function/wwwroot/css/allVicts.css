@@ -62,6 +62,14 @@
 	align-items: center;
 	margin: 0;
 	padding: 10px 10px;
+
+	transition: all 500ms ease;
+}
+
+.btn-start:hover {
+	background: rgba(0,0,0,0);
+	color: #3a7999;
+	box-shadow: inset 0 0 0 3px #3a7999;
 }
 
 .btn-start-text {
@@ -77,6 +85,7 @@
 	line-height: normal;	
 
 }
+
 
 .btn-view {
 	cursor: pointer;
@@ -95,6 +104,12 @@
 	font-style: normal;
 	font-weight: 700;
 	line-height: normal;
+
+	transition: all 500ms ease;
+}
+
+.btn-view-text:hover {
+	color: #000;
 }
 
 
