@@ -29,7 +29,7 @@ namespace QueezServer.API
                 await SetUserAnswer(response, request);
             else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/card/$") && Regex.IsMatch(queryString, idExpression))
                 await GetCard(response, request);
-            else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/user/answer/$") && Regex.IsMatch(queryString, idExpression))
+            else if (request.Method == "POST" && Regex.IsMatch(path, @"api/activequiz/user/answer/$") && Regex.IsMatch(queryString, idExpression))
                 await GetAnswer(response, request);
             else if (request.Method == "GET" && Regex.IsMatch(path, @"api/activequiz/user/$") && Regex.IsMatch(queryString, idExpression))
                 await GetQuizUsers(response, request);
@@ -80,7 +80,7 @@ namespace QueezServer.API
                     var json = new Dictionary<string, string>
                     {
                         ["name"] = quiz.Name,
-                        ["link"] = "https://localhost:7290/players.html?id=" + currentId
+                        ["link"] = "https://localhost:7290/players.html?id=" + currentId//Заменить на нормальный домен
                     };
 
                     await response.WriteAsJsonAsync(json);
@@ -133,12 +133,18 @@ namespace QueezServer.API
         public async Task GetAnswer(HttpResponse response, HttpRequest request)
         {
             var quizId = request.QueryString.ToString().Split("=")[^1];
+            var userId = await request.ReadFromJsonAsync<string>();
 
-            if (quizId != null)
+            if (quizId != null && userId != null)
             {
                 if (Quizes.ContainsKey(quizId))
                 {
-                    await response.WriteAsJsonAsync(Quizes[quizId].ActiveCard.Correct);
+                    var answer = new Dictionary<string, string>()
+                    {
+                        ["userAnswer"] = Quizes[quizId].Users[userId].Answers[Quizes[quizId].ActiveCardIndex],
+                        ["correctAnswer"] = Quizes[quizId].ActiveCard.Correct
+                    };
+                    await response.WriteAsJsonAsync(answer);
                 }
                 else
                 {
@@ -181,7 +187,8 @@ namespace QueezServer.API
                     ["options"] = currentQuiz.ActiveCard.Options
                 },
                 ["dateTime"] = currentQuiz.StartTime,
-                ["isLast"] = currentQuiz.ActiveCardIndex == currentQuiz.Cards.Count - 1
+                ["isLast"] = currentQuiz.ActiveCardIndex == currentQuiz.Cards.Count - 1,
+                ["type"] = currentQuiz.ActiveCard.Type
             };
             Console.WriteLine(data["dateTime"].ToString());
             await response.WriteAsJsonAsync(data);
@@ -317,8 +324,7 @@ namespace QueezServer.API
 
         public async Task DeleteLobby(HttpResponse response, HttpRequest request)
         {
-            await Task.Delay(300000);
-            var id = request.Path.Value;
+            var id = request.QueryString.ToString().Split("=")[^1];
 
             if (id != null)
             {

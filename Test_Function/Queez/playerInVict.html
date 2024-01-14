@@ -11,20 +11,25 @@
 	<link href="css/bootstrap-grid.min.css" rel="stylesheet" type="text/css">
 	<link href="css/normalize.css" rel="stylesheet" type="text/css">
 	<link href="css/style.css" rel="stylesheet" type="text/css">
+	<link href="css/playerInVict.css" rel="stylesheet" type="text/css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Queez</title>
 </head>
 
 <body>
 	<header class="header">
-		<div class="container header__container">
+		<div class="container extra__header__container">
 			<div class="logo">
-				<h1 class="Queez">Queez</h1>
+				<h1 class="logo__text">Queez</h1>
 			</div>
 		</div>
 	</header>
 	<main>
-		<div class="container">Таймер: <span id="time">20</span> сек.</div>
+		<div class="container timer__container">
+			<div class="timer">
+				<p class="timer__text">Осталось <span id="time"></span>&nbsp;сек.</p>
+			</div>
+		</div>
     <div class="container player-interface"></div>
   </main>
 	<script src="../js/queezLink.js"></script>

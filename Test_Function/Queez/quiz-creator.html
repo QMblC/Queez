@@ -11,27 +11,33 @@
 	<link href="css/bootstrap-grid.min.css" rel="stylesheet" type="text/css">
 	<link href="css/normalize.css" rel="stylesheet" type="text/css">
 	<link href="css/style.css" rel="stylesheet" type="text/css">
+	<link href="css/quiz-creator.css" rel="stylesheet" type="text/css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Queez</title>
 </head>
 
 <body>
 	<header class="header">
-		<div class="container header__container">
+		<div class="container extra__header__container">
 			<div class="logo">
-				<h1 class="Queez">Queez</h1>
+				<h1 class="logo__text">Queez</h1>
 			</div>
 		</div>
 	</header>
 	<main>
 		<div class="container quiz-windows">
-			<div class="player-link"></div>
-			<div class="vict-info"></div>
-			<div class="players">
-				<h2 class="players-title">Участники</h2>
-				<div class="players-list"></div>
+			<div class="col-12 player-link"></div>
+			<div class="col-12 vict-info"></div>
+
+			<div class="col-8 start-game"></div>
+
+			<div class="col-12 players">
+				<h2 class="col-12 players-title">
+					Участники:<span class="players-count"> </span>
+				</h2>
+				<div class="row col-12 players-list"></div>
 			</div>
-			<div class="start-game"></div>
+
 		</div>
 	</main>
 	

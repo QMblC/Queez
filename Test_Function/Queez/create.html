@@ -2,17 +2,19 @@
 <html lang="ru">
 
 <head>
-	<meta charset="UTF-8">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link
-		href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Roboto:ital,wght@0,400;1,700&family=Space+Mono&display=swap"
-		rel="stylesheet">
-	<link href="css/bootstrap-grid.min.css" rel="stylesheet" type="text/css">
-	<link href="css/normalize.css" rel="stylesheet" type="text/css">
-	<link href="css/style.css" rel="stylesheet" type="text/css">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Queez</title>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Roboto:ital,wght@0,400;1,700&family=Space+Mono&display=swap"
+    rel="stylesheet">
+  <link href="css/bootstrap-grid.min.css" rel="stylesheet" type="text/css">
+  <link href="css/normalize.css" rel="stylesheet" type="text/css">
+  <link href="css/style.css" rel="stylesheet" type="text/css">
+  <link href="css/create.css" rel="stylesheet" type="text/css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Queez</title>
 </head>
 
 <body>
@@ -30,22 +32,17 @@
     </div>
   </div>
   <header class="header">
-    <div class="creation__header__container">
-      <div class="logo">
-        <h1 class="Queez">Queez</h1>
+    <div class="container header__container">
+      <div class="col-12 col-sm-12 col-md-3 logo">
+        <h1 class="logo__text">Queez</h1>
       </div>
-      <nav class="site-nav">
+      <nav class="col-9 d-none d-sm-none d-md-flex site-nav">
         <ul class="nav-list">
-          <li class="nav-list-item"><a href="index.html">Главная</a></li>
-          <li class="nav-list-item"><a href="allVicts.html">Все викторины</a></li>
-          <li class="nav-list-item"><a href="vict.html">Создать викторину</a></li>
+          <li class="nav-list-item"><a class="list-item-link" href="allVicts.html">Все викторины</a></li>
+          <li class="nav-list-item"><a class="list-item-link" href="index.html">Главная</a></li>
+          <li class="nav-list-item"><a class="list-item-link" href="vict.html">Мои викторины</a></li>
         </ul>
       </nav>
-      <button class="login__btn">
-        <!-- <a href="#" class="login">Войти</a> -->
-        <p class="login__text">Войти</p>
-        <img src="./img/icon.svg">
-      </button>
     </div>
   </header>
 
@@ -53,7 +50,23 @@
 
     <section id="creation">
       <div class="creation__container">
-        <div class="creation__cards">
+
+
+        <div class="col-12 col-sm-7 col-md-8 col-lg-9 col-xl-9 col-xxl-10 creation__menu-main">
+
+          <div class="col-12 d-none main-creation-form">
+            <form id="creation_form" class="creation_form"></form>
+
+            <div class="creation__bottom-menu">
+              <button id="create-vict" class="btn__create__vict">
+                Завершить
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-12 col-sm-5 col-md-4 col-lg-3 col-xl-3 col-xxl-2 creation__cards">
           <div class="cards-menu__title">
             <h2 class="cards-menu__title__text">
               Карточки
@@ -64,26 +77,13 @@
 
           <div class="create-card">
             <button class="btn-create-card">
-              Добавить вопрос
+              Добавить&nbsp;вопрос
             </button>
           </div>
         </div>
-
-        <div class="creation__menu-main">
-
-          <div class="d-none main-creation-form">
-            <form id="creation_form" class="creation_form"></form>
-  
-            <div class="creation__bottom-menu">
-              <button id="create-vict" class="btn__create__vict">
-                Ввести название / завершить
-              </button>
-            </div>
-          </div>
-
-        </div>
-
       </div>
+
+
 
     </section>
   </main>

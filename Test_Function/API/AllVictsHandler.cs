@@ -20,7 +20,8 @@ namespace QueezServer.API
                         {
                             "1", "2", "3", "4"
                         },
-                        Correct = "4"
+                        Correct = "4",
+                        Type = "Викторина"
                     },
                     new Card(2)
                     {
@@ -29,7 +30,8 @@ namespace QueezServer.API
                         {
                             "1", "2", "3", "4"
                         },
-                        Correct = "3"
+                        Correct = "3",
+                        Type = "Викторина"
                     },
                     new Card(3)
                     {
@@ -38,7 +40,8 @@ namespace QueezServer.API
                         {
                             "1", "2", "3", "4"
                         },
-                        Correct = "2"
+                        Correct = "2",
+                        Type = "Викторина"
                     }
                 }
             } },
@@ -54,7 +57,8 @@ namespace QueezServer.API
                         {
                             "Заяц", "Мышь", "Белка", "Лиса"
                         },
-                        Correct = "Лиса"
+                        Correct = "Лиса",
+                        Type = "Викторина"
                     },
                     new Card(2)
                     {
@@ -63,7 +67,8 @@ namespace QueezServer.API
                         {
                             "Слон", "Лев", "Жираф", "Носорог"
                         },
-                        Correct = "Жираф"
+                        Correct = "Жираф",
+                        Type = "Викторина"
                     },
                     new Card(3)
                     {
@@ -72,7 +77,8 @@ namespace QueezServer.API
                         {
                             "Тигр", "Слон", "Собака", "Кот"
                         },
-                        Correct = "Слон"
+                        Correct = "Слон",
+                        Type = "Викторина"
                     }
                 }
             } },
@@ -130,7 +136,6 @@ namespace QueezServer.API
                 b[i]["id"] = a[i].Id;
                 b[i]["name"] = a[i].Name;
             };
-
             await response.WriteAsJsonAsync(b);
         }
     }

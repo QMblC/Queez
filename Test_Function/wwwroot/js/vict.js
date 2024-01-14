@@ -1,12 +1,25 @@
 // Страница со всеми викторинами
 function getVicts() {
-  fetch("/api/quizes/")
-    .then((res) => res.json())
-    .then((result) => {
-      render(result);
-    });
+  const quizzes = localStorage.getItem('myQuizzes');
+  if (!quizzes) {
+    drawEmpty();
+    return;
+  };
+  const list = JSON.parse(quizzes);
+  render(list);
 }
 const quizBlock = document.querySelector(".quizzes");
+
+function drawEmpty() {
+  console.log('================================');
+  const card = document.createElement("div");
+  card.className = "col-12 hint-card";
+  card.innerHTML = `
+    <p class="hint">Здесь будут ваши викторины</p>
+  `;
+  quizBlock.append(card);
+}
+
 
 function render(victs) {
   victs.forEach(({ id, name }) => {

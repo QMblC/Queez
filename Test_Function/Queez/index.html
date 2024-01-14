@@ -11,6 +11,7 @@
 	<link href="css/bootstrap-grid.min.css" rel="stylesheet" type="text/css">
 	<link href="css/normalize.css" rel="stylesheet" type="text/css">
 	<link href="css/style.css" rel="stylesheet" type="text/css">
+	<link href="css/index.css" rel="stylesheet" type="text/css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Queez</title>
 </head>
@@ -18,71 +19,69 @@
 <body>
 	<header class="header">
 		<div class="container header__container">
-			<div class="logo">
-				<h1 class="Queez">Queez</h1>
+			<div class="col-12 col-lg-3 logo">
+				<h1 class="logo__text">Queez</h1>
 			</div>
-			<nav class="site-nav">
+			<nav class="col-12 col-lg-9 site-nav">
 				<ul class="nav-list">
-					<li class="nav-list-item active-page"><a href="#">Главная</a></li>
-					<li class="nav-list-item"><a href="allVicts.html">Все викторины</a></li>
-					<li class="nav-list-item"><a href="vict.html">Создать викторину</a></li>
+					<li class="nav-list-item"><a class="list-item-link" href="allVicts.html">Все викторины</a></li>
+					<li class="nav-list-item"><a class="list-item-link active-page" href="#">Главная</a></li>
+					<li class="nav-list-item"><a class="list-item-link" href="vict.html">Мои викторины</a></li>
 				</ul>
 			</nav>
-			<button class="login__btn">
-				<!-- <a href="#" class="login">Войти</a> -->
-				<p class="login__text">Войти</p>
-
-				<img src="./img/icon.svg">
-			</button>
 		</div>
 	</header>
 
 	<main>
 		<section id="hero">
 			<div class="container hero__container">
-				<div class="hero_content">
-					<p class="h1-title">Простой и удобный сервис для проведения онлайн викторин</p>
+				<div class="col-12 hero_content">
+					<p class="col-12 hero__title">Простой&nbsp;и&nbsp;удобный сервис для&nbsp;проведения онлайн&nbsp;викторин</p>
 				</div>
-				<img class="hero__back" src="./img/_.png">
+				<!-- <img class="hero__back" src="./img/_.png"> -->
 			</div>
 		</section>
 
 		<section id="how">
 			<div class="container how__container">
 				<h2 class="how__title">Как создать викторину?</h2>
-				<ul class="row how__list">
-					<li class="col-6">
+				<ul class="how__list">
+					<li class="col-12 col-md-6 how__list-el">
 						<div class="how__item step-one">
 							<div class="how__item-content">
-								<h3 class="how__item-title">Шаг 1</h3>
-								<p></p>
+								<h3 class="how__item-title">Шаг&nbsp;1</h3>
+								<p class="how__item-descr">Перейдите во вкладку «Мои&nbsp;викторины» и нажмите кнопку «Создать&nbsp;викторину»</p>
 							</div>
 						</div>
 					</li>
 
-					<li class="col-6">
+					<li class="col-12 col-md-6 how__list-el">
 						<div class="how__item step-two">
 							<div class="how__item-content">
-								<h3 class="how__item-title">Шаг 2</h3>
-								<p></p>
+								<h3 class="how__item-title">Шаг&nbsp;2</h3>
+								<p class="how__item-descr">Выберите тип первого вопроса, впишите&nbsp;вопрос и варианты&nbsp;ответа, отметьте
+									правильный. Если вам нужно добавить больше карточек, нажмите на кнопку «Добавить&nbsp;вопрос» в левом
+									нижнем углу.
+								</p>
 							</div>
 						</div>
 					</li>
 
-					<li class="col-6">
+					<li class="col-12 col-md-6 how__list-el">
 						<div class="how__item step-three">
 							<div class="how__item-content">
-								<h3 class="how__item-title">Шаг 3</h3>
-								<p></p>
+								<h3 class="how__item-title">Шаг&nbsp;3</h3>
+								<p class="how__item-descr">После добавления всех вопросов, нажмите на кнопку «Завершить&nbsp;создание» и
+									введите название.</p>
 							</div>
 						</div>
 					</li>
 
-					<li class="col-6">
+					<li class="col-12 col-md-6 how__list-el">
 						<div class="how__item step-four">
 							<div class="how__item-content">
-								<h3 class="how__item-title">Шаг 4</h3>
-								<p></p>
+								<h3 class="how__item-title">Шаг&nbsp;4</h3>
+								<p class="how__item-descr">Викторина создана, вы можете найти её в разделе «Мои&nbsp;викторины».</p>
 							</div>
 						</div>
 					</li>
@@ -96,11 +95,11 @@
 		<section id="footer">
 			<div class="container footer__container">
 
-				<div class="footer-logo">
-					<h1 class="Queez">Queez</h1>
+				<div class="col-12 col-md-2 footer-logo">
+					<h1 class="queez">Queez</h1>
 				</div>
 
-				<ul class="footer-nav">
+				<ul class="col-12 col-md-4 footer-nav">
 					<li class="footer-nav-item">
 						<a class="footer__item-link" href="#">О нас</a>
 					</li>
@@ -109,21 +108,22 @@
 					</li>
 				</ul>
 
-				<address class="footer__contact">
+				<address class="col-12 col-sm-6 col-md-3 footer__contact">
 					<p class="contact-title">Служба поддержки</p>
-					<p class="source"><a href="#">support@queez.com</a></p>
+					<p class="source"><a class="source__text" href="#">support@queez.com</a></p>
 				</address>
 
-				<address class="footer__contact">
+				<address class="col-12 col-sm-6 col-md-3 footer__contact">
 					<p class="contact-title">Сотрудничество</p>
-					<p class="source"><a href="#">offer@queez.com</a></p>
+					<p class="source"><a class="source__text" href="#">offer@queez.com</a></p>
 				</address>
 
 			</div>
 		</section>
 	</footer>
-	
+
 	<!-- <script src="../js/queezLink.js"></script> -->
+
 </body>
 
 </html>

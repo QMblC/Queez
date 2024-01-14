@@ -1,4 +1,4 @@
-/////////// Сверху пока юзлесс
+localStorage.removeItem("answer");
 
 let userAuthorized = false;
 async function findPlayer() {
@@ -30,22 +30,29 @@ if (uinf) findPlayer();
 
 const interface = document.querySelector(".player-interface");
 
+const inputWindow = document.createElement("div");
+inputWindow.className = "input-window";
+
 const input = document.createElement("input");
+input.className = "input-nickname";
 input.type = "text";
 input.name = "nickname";
 input.id = "nickname";
 input.placeholder = "Введите имя";
 
 const submit = document.createElement("input");
+submit.className = "submit-nickname";
 submit.type = "submit";
 submit.value = "Присоединиться";
 
-interface.append(input, submit);
+inputWindow.append(input, submit);
+interface.append(inputWindow);
 
 //let usersList = {};
 
 submit.onclick = async () => {
   const nickname = input.value;
+  if (nickname.trim() == "") return;
   const user = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -66,7 +73,13 @@ function showUsers() {
   const btnBlock = document.createElement("div");
   btnBlock.className = "btn-block";
 
+  const waitText = document.createElement("h2");
+  waitText.className = "wait-text";
+  waitText.textContent = "Ожидайте начала";
+
+
   const exitBtn = document.createElement("button");
+  exitBtn.className = "btn-exit";
   exitBtn.textContent = "Покинуть сессию";
   exitBtn.onclick = async () => {
     const uinf = localStorage.getItem("uinf");
@@ -81,11 +94,10 @@ function showUsers() {
   }
 
   const players = document.createElement("div");
-  players.className = "players";
+  players.className = "col-12 players";
 
   btnBlock.append(exitBtn);
-  interface.append(btnBlock);
-  interface.append(players);
+  interface.append(btnBlock, waitText, players);
 
   checkUsers();
 }
@@ -101,20 +113,23 @@ async function getUsersList() {
 async function drawUsers(playersList) {
   const players = document.querySelector(".players");
   players.innerHTML = `
-    <h3 class="users-count">Всего участников: ${playersList.length}</h3>
+    <h3 class="players-count">Всего участников: ${playersList.length}</h3>
     `;
   const playersContainer = document.createElement("div");
+  playersContainer.className = "row col-12 players-list";
   for (const player of playersList) {
     const playerCard = document.createElement("div");
+    playerCard.className = "col-6 col-md-4 col-lg-4 col-xl-4 col-xxl-3 player-card";
+
+    const playerCardContent = document.createElement("div");
+    playerCardContent.className = "col-11 player-card-content";
+
     const playerName = document.createElement("p");
+    playerName.className = "col-12 player-card-name";
     playerName.textContent = player.nickname;
 
-    // для наглядности, без стилей, убрать
-    const aaa = document.createElement("button");
-    aaa.append(playerName);
-    playerCard.append(aaa);
-    //
-
+    playerCardContent.append(playerName);
+    playerCard.append(playerCardContent);
     playersContainer.append(playerCard);
   }
   players.append(playersContainer);

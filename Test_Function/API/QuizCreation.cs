@@ -50,6 +50,8 @@ namespace QueezServer.API
             if (readQuiz != null)
             {
                 quiz.Name = readQuiz.QuizTitle;
+
+                
                 for (var i = 0; i < readQuiz.Cards.Count; i++)
                 {
                     quiz.AddCard(new Card(readQuiz.Cards[i].Id)
@@ -62,9 +64,9 @@ namespace QueezServer.API
                             readQuiz.Cards[i].Options[3],
                         },
                         Correct = readQuiz.Cards[i].Answer,
-                        Question = readQuiz.Cards[i].Question
-
-                    });
+                        Question = readQuiz.Cards[i].Question,
+                        Type = readQuiz.Cards[i].QuestionType
+                    }) ;
                 }
                 Quizes[id] = quiz;
                 AllVictsHandler.Quizes[id] = quiz;
@@ -99,6 +101,7 @@ namespace QueezServer.API
     public class Data
     {
         public string QuizTitle { get; set; }
+        
         public List<DataCard> Cards { get; set; }
     }
 

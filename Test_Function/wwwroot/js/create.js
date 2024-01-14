@@ -1,6 +1,5 @@
 const cardsMenu = document.querySelector(".cards-menu");
 const addCardButton = document.querySelector(".btn-create-card");
-
 const creationMenu = document.querySelector(".creation__menu-main");
 const mainCreationForm = document.querySelector(".main-creation-form");
 const form = document.querySelector("#creation_form");
@@ -35,15 +34,20 @@ function deleteItemFromLocalStorage(itemId) {
 
 addCardButton.addEventListener("click", (e) => {
   e.preventDefault();
-  if (!mainCreationForm.classList.contains("d-none")) {
-    mainCreationForm.classList.add("d-none");
-    showQuestionTypes();
-  }
+  const allSildes = document.querySelectorAll(".cards-menu__slide");
+  allSildes.forEach((slide)=>{
+    slide.classList.remove("active");
+    slide.classList.add("not-active");
+  });
+  mainCreationForm.classList.add("d-none");
+  showQuestionTypes();
 });
 
 function addCheckboxes() {
-  const cb = form.querySelectorAll(".option-cb");
-
+  let  cb = form.querySelectorAll(".option-cb");
+  const cbTF = form.querySelectorAll(".tf-cb");
+  if (cbTF.length > 0) cb = cbTF;
+  
   cb.forEach((item) => {
     item.addEventListener("click", (e) => {
       e.preventDefault();
@@ -74,11 +78,12 @@ function addCheckboxes() {
         }
         card.answer = value;
       } else {
-        const inputValue = item
-          .closest(".option")
-          .querySelector("p")
-          .textContent.trim();
-        card.answer = inputValue.toLocaleLowerCase();
+        // const inputValue = item
+        //   .closest(".option")
+        //   .querySelector("p")
+        //   .textContent.trim();
+        const inputValue = item.textContent.trim();
+        card.answer = inputValue;
       }
 
       addItemsToLocalStorage(quizData);
@@ -102,22 +107,32 @@ function checkInput(id, value) {
 }
 
 function showQuestionTypes() {
+  const delWindow = document.querySelector(".types-window");
+  if(delWindow) delWindow.remove();
   const typesWindow = document.createElement("div");
-  typesWindow.classList.add("types-window");
+  typesWindow.className = "col-12 types-window";
   typesWindow.innerHTML = `
-    <h2>Тип вопроса</h2>
-    <button>Викторина</button>
-    <button>Вписать ответ</button>
-    <button>Правда / Ложь</button>
+    <h2 class="types__title">Тип вопроса</h2>
+    <div class="types-btns">
+      <button class="btn types-btn">Викторина</button>
+      <button class="btn types-btn">Вписать ответ</button>
+      <button class="btn types-btn">Правда / Ложь</button>
+    </div>
   `;
 
   typesWindow.querySelectorAll("button").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      typesWindow.classList.toggle("d-none");
+      // typesWindow.classList.toggle("d-none");
+
       const type = btn.textContent;
-      drawCard(type, getNextCardId());
+
+
+      typesWindow.remove();
+      const idx = getNextCardId();
+      drawCard(type, idx);
       createCardWindow(type);
+      // drawCard(type, idx);
     });
   });
 
@@ -138,6 +153,18 @@ function drawCard(
   answer = ""
 ) {
   currentCardId = id;
+  mainCreationForm.classList.remove("d-none");
+  const allSildes = document.querySelectorAll(".cards-menu__slide");
+
+  allSildes.forEach((slide)=>{
+    slide.classList.remove("active");
+    slide.classList.add("not-active");
+    if (slide.dataset.id == id) {
+      slide.classList.remove("not-active");
+      slide.classList.add("active");
+    }
+  });
+
   switch (type) {
     case "Викторина":
       createTypeVict(id, question, options, answer);
@@ -159,16 +186,20 @@ let quizData = {
 
 function createCardWindow(type, flag = false) {
   const questionInput = form.querySelector(".input__question");
-  questionInput.addEventListener("change", (e) => {
-    e.preventDefault();
+  console.log(1)
+  questionInput.addEventListener("input", (e) => {
+
     const id = form.querySelector(".form__question").dataset.id;
     quizData.cards.filter((card) => card.id == id)[0].question =
       questionInput.value;
     addItemsToLocalStorage(quizData);
 
+    
+    if(window.innerWidth < 576) return;
     drawCardsMenu();
+    // drawCard(currentCardId);
   });
-
+  console.log(2)
   const optionsInput = form.querySelectorAll(".options-item");
   for (let i = 0; i < optionsInput.length; i++) {
     optionsInput[i].addEventListener("change", (e) => {
@@ -187,9 +218,10 @@ function createCardWindow(type, flag = false) {
       addItemsToLocalStorage(quizData);
     });
   }
+  console.log(3)
   if (mainCreationForm.classList.contains("d-none"))
     mainCreationForm.classList.remove("d-none");
-
+  console.log(4)
   if (!flag) {
     const id = getNextCardId();
     quizData.cards.push({
@@ -201,17 +233,21 @@ function createCardWindow(type, flag = false) {
     });
     drawCardsMenu();
     addItemsToLocalStorage(quizData);
+    // drawCard(type, id);
   }
 }
 
 let previewCards = [];
 function drawCardsMenu() {
+  console.log(100)
   previewCards = quizData.cards;
   cardsMenu.innerHTML = "";
   previewCards.forEach(({ id, question }) => {
     const menuCard = document.createElement("li");
-    menuCard.className = "cards-menu__slide";
     menuCard.dataset.id = id;
+    if (id == getNextCardId()-1) menuCard.className = "cards-menu__slide active"
+    else menuCard.className = "cards-menu__slide not-active";
+
     menuCard.innerHTML = `
       <p class="card-number">№ ${id}</p>
       <p class="card-title">${question}</p>
@@ -227,6 +263,8 @@ function drawCardsMenu() {
         if (typesWindow) typesWindow.classList.add("d-none");
       }
       const id = menuCard.dataset.id;
+
+
       const card = getCardFromQuizData(id);
       drawCard(
         card.questionType,
@@ -290,72 +328,73 @@ function createTypeVict(id, question, options, answer) {
     }
   }
   form.innerHTML = `
-  <div class="form__question" data-id=${id}>
+  <div class="col-12 form__question" data-id=${id}>
     <p class="card-number">№ ${id}</p>
     <input value="${question}" type="text" id="question" name="question" class="input__question" placeholder="Введите вопрос...">
   </div>
 
-  <div class="options">
-    <div class="option option-one">
+  <div class="col-12 options">
+  <div class="col-12 options__container">
+    <div class="col-11 col-sm-11 col-md-11 col-lg-8 col-xl-7 option option-one">
       <button id="option1-cb" class="option-cb${btns[0]}"></button>
-      <input value="${options[0]}" type="text" id="option1" name="options" class="options-item" placeholder="Вариант №1...">
+      <input value="${options[0]}" type="text" id="option1" name="options" class="col-10 col-sm-10 col-md-10 options-item" placeholder="Вариант №1...">
     </div>
 
-    <div class="option option-two">
+    <div class="col-11 col-sm-11 col-md-11 col-lg-8 col-xl-7 option option-two">
       <button id="option2-cb" class="option-cb${btns[1]}"></button>
-      <input value="${options[1]}" type="text" id="option2" name="options" class="options-item" placeholder="Вариант №2...">
+      <input value="${options[1]}" type="text" id="option2" name="options" class="col-10 col-sm-10 col-md-10 options-item" placeholder="Вариант №2...">
     </div>
 
-    <div class="option option-three">
+    <div class="col-11 col-sm-11 col-md-11 col-lg-8 col-xl-7 option option-three">
       <button id="option3-cb" class="option-cb${btns[2]}"></button>
-      <input value="${options[2]}" type="text" id="option3" name="options" class="options-item" placeholder="Вариант №3...">
+      <input value="${options[2]}" type="text" id="option3" name="options" class="col-10 col-sm-10 col-md-10 options-item" placeholder="Вариант №3...">
     </div>
 
-    <div class="option option-four">
+    <div class="col-11 col-sm-11 col-md-11 col-lg-8 col-xl-7 option option-four">
       <button id="option4-cb" class="option-cb${btns[3]}"></button>
-      <input value="${options[3]}" type="text" id="option4" name="options" class="options-item" placeholder="Вариант №4...">
+      <input value="${options[3]}" type="text" id="option4" name="options" class="col-10 col-sm-10 col-md-10 options-item" placeholder="Вариант №4...">
     </div>
+  </div>
   </div>
   `;
 }
 
 function createTypeEnter(id, question, answer) {
   form.innerHTML = `
-  <div class="form__question" data-id=${id}>
+  <div class="col-12 form__question" data-id=${id}>
     <p class="card-number">№ ${id}</p>
     <input value="${question}" type="text" id="question" name="question" class="input__question" placeholder="Введите вопрос...">
   </div>
 
-  <div class="options">
-    <div class="option option-one">
-      <input value="${answer}" type="text" id="answer" name="answer" class="options-item" placeholder="Ответ...">
+  <div class="col-12 options">
+    <div class="col-11 col-sm-11 col-md-11 col-lg-8 col-xl-7 option option-one">
+      <input value="${answer}" type="text" id="answer" name="answer" class="col-12 options-item" placeholder="Ответ...">
     </div>
   </div>
   `;
 }
 
 function createTypeTF(id, question, answer) {
-  let trueBtn = "";
-  let falseBtn = "";
-  if (answer === "правда") trueBtn = " active";
-  else if (answer === "ложь") falseBtn = " active";
+  let trueBtn = answer === "правда" ? " active": "";
+  let falseBtn = answer === "ложь" ? " active": "";
 
   form.innerHTML = `
-  <div class="form__question" data-id=${id}>
+  
+  <div class="col-12 form__question" data-id=${id}>
     <p class="card-number">№ ${id}</p>
     <input value="${question}" type="text" id="question" name="question" class="input__question" placeholder="Введите вопрос...">
   </div>
 
-  <div class="options">
-    <div class="option option-one">
-      <button id="option1-cb" class="option-cb${trueBtn}"></button>
-      <p>Правда</p>
+  <div class="col-12 options">
+  <div class="col-12 options-tf__container">
+    <div class="col-12 col-sm-12 col-md-6 option option-one option-tf">
+      <button id="option1-cb" class="col-10 tf-cb${trueBtn}">Правда</button>
     </div>
 
-    <div class="option option-two">
-      <button id="option2-cb" class="option-cb${falseBtn}"></button>
-      <p>Ложь</p>
+    <div class="col-12 col-sm-12 col-md-6 option option-two option-tf">
+      <button id="option2-cb" class="col-10 tf-cb${falseBtn}">Ложь</button>
     </div>
+  </div>
   </div>
   `;
 }
@@ -448,13 +487,13 @@ async function create() {
                 quizData = {};
                 localStorage.removeItem("quizData");
 
-                const myVicts = getItemsFromLocalStorage("myVicts");
+                const myQuizzes = getItemsFromLocalStorage("myQuizzes");
                 const item = {
                     id: data.id,
                     name: data.name,
                 }
-                myVicts.push(item);
-                localStorage.setItem("myVicts", JSON.stringify(myVicts));
+                myQuizzes.push(item);
+                localStorage.setItem("myQuizzes", JSON.stringify(myQuizzes));
 
                 window.location.href = 'vict.html';
             } else {

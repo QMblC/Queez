@@ -114,7 +114,9 @@ namespace QueezServer.QuizStructure
                         Cards[i].Options[2],
                         Cards[i].Options[3],
                     },
-                    Question = Cards[i].Question
+                    Question = Cards[i].Question,
+                    Type = Cards[i].Type
+                    
                 });
             }
         }

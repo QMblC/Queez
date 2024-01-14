@@ -11,6 +11,7 @@ namespace QueezServer.QuizStructure
         public string ImagePath { get; private set; } = ""; //Переработать?
         public List<string> Options { get; set; } = new();
         public string Correct { get; set; } = "";
+        public string Type { get; set; }
 
         #endregion
 
