@@ -173,7 +173,7 @@ app.Run();
 public class CardDB
 {
     public string Id { get; set; } = "";
-    public string Question_Name { get; set; } = "";
+    public string Question_Type { get; set; } = "";
     public string Question { get; set; } = "";
     public string Answer1 { get; set; } = "";
     public string Answer2 { get; set; } = "";
